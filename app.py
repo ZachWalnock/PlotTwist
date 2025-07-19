@@ -1,9 +1,19 @@
 from fastapi import FastAPI, HTTPException
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from llm import ask_real_estate_agent
 import uvicorn
 
 app = FastAPI(title="Real Estate Agent API", description="API for real estate development analysis")
+
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PropertyRequest(BaseModel):
     property_info: str
@@ -13,15 +23,6 @@ class PropertyResponse(BaseModel):
 
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
-    """
-    Analyze a property for real estate development opportunities.
-    
-    Args:
-        request: PropertyRequest containing property information
-        
-    Returns:
-        PropertyResponse containing the analysis
-    """
     try:
         analysis = ask_real_estate_agent(request.property_info)
         return PropertyResponse(analysis=analysis)
