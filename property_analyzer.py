@@ -174,35 +174,267 @@ def analyze_market_context(analysis: Dict) -> Dict:
     }
     
     try:
-        # Extract neighborhood from address
-        address = analysis['property_summary']['address']
-        if 'Allston' in address:
-            context['neighborhood'] = 'Allston'
-            context['market_trends'] = [
-                'Student housing demand',
-                'Young professional influx',
-                'Transit-oriented development interest'
-            ]
-        elif 'Brighton' in address:
-            context['neighborhood'] = 'Brighton'
-            context['market_trends'] = [
-                'Family-oriented development',
-                'Green Line accessibility'
-            ]
+        # Extract neighborhood from address and parcel data
+        address = analysis['property_summary']['address'].upper()
+        parcel_data = analysis.get('parcel_data', {})
+        full_address = parcel_data.get('address', '').upper()
         
-        # Check zoning analysis for transit info
+        # Get coordinates for more precise neighborhood detection
+        coordinates = analysis.get('property_summary', {}).get('coordinates', {})
+        lat = coordinates.get('latitude')
+        lon = coordinates.get('longitude')
+        
+        # Neighborhood detection based on address patterns and coordinates
+        neighborhood_info = detect_boston_neighborhood(address, full_address, lat, lon)
+        context.update(neighborhood_info)
+        
+        # Add context based on property value
+        total_value = parcel_data.get('fy2025_total_value', '')
+        if total_value and '$' in total_value:
+            value = extract_numeric_value(total_value)
+            if value > 1500000:
+                context['market_trends'].append('High-value market segment')
+                context['economic_indicators']['property_value_tier'] = 'Premium'
+            elif value > 1000000:
+                context['economic_indicators']['property_value_tier'] = 'Above-average'
+            else:
+                context['economic_indicators']['property_value_tier'] = 'Average'
+                
+        # Add property age context
+        year_built = parcel_data.get('year_built', '')
+        if year_built and year_built.isdigit():
+            age = 2025 - int(year_built)
+            if age > 100:
+                context['market_trends'].append('Historic property potential')
+                context['economic_indicators']['property_age'] = 'Historic (100+ years)'
+            elif age > 50:
+                context['economic_indicators']['property_age'] = 'Mature (50+ years)'
+            else:
+                context['economic_indicators']['property_age'] = 'Modern'
+        
+        # Check zoning analysis for additional transit context
         zoning_analysis = analysis.get('zoning_analysis', {})
         planning_context = zoning_analysis.get('planning_context', {})
         
         if planning_context.get('transit_oriented'):
             context['transit_accessibility'] = 'High'
-            context['market_trends'].append('TOD bonus potential')
+            if 'TOD bonus potential' not in context['market_trends']:
+                context['market_trends'].append('TOD bonus potential')
         
     except Exception as e:
         print(f"Error in market context analysis: {e}")
         context['error'] = str(e)
     
     return context
+
+def detect_boston_neighborhood(address: str, full_address: str, lat: float = None, lon: float = None) -> Dict:
+    """Detect Boston neighborhood and provide market context"""
+    
+    neighborhood_data = {
+        'neighborhood': 'Unknown',
+        'market_trends': [],
+        'transit_accessibility': 'Unknown',
+        'walkability_score': 'Unknown'
+    }
+    
+    # Combine address strings for analysis
+    combined_address = f"{address} {full_address}".upper()
+    
+    # Allston/Brighton
+    if any(word in combined_address for word in ['HARVARD', 'ALLSTON', 'BRIGHTON']):
+        if 'HARVARD' in combined_address:
+            neighborhood_data.update({
+                'neighborhood': 'Allston',
+                'market_trends': [
+                    'Student housing demand from nearby universities',
+                    'Young professional influx', 
+                    'Transit-oriented development interest',
+                    'Gentrification pressure increasing property values',
+                    'Two-family home conversion opportunities'
+                ],
+                'transit_accessibility': 'Good - Green Line B accessible',
+                'walkability_score': 'High - Urban neighborhood'
+            })
+        else:
+            neighborhood_data.update({
+                'neighborhood': 'Brighton',
+                'market_trends': [
+                    'Family-oriented development',
+                    'Green Line accessibility',
+                    'Suburban feel with urban amenities'
+                ],
+                'transit_accessibility': 'Good - Green Line access',
+                'walkability_score': 'Moderate to High'
+            })
+    
+    # Back Bay
+    elif any(word in combined_address for word in ['BOYLSTON', 'NEWBURY', 'MARLBOROUGH', 'BEACON', 'COMMONWEALTH']):
+        neighborhood_data.update({
+            'neighborhood': 'Back Bay',
+            'market_trends': [
+                'Luxury residential market',
+                'Historic brownstone conversions',
+                'High-end retail and dining',
+                'Premium real estate values'
+            ],
+            'transit_accessibility': 'Excellent - Multiple Green Line stations',
+            'walkability_score': 'Very High - Walker\'s Paradise'
+        })
+    
+    # South End
+    elif any(word in combined_address for word in ['WASHINGTON ST', 'TREMONT', 'HARRISON', 'SHAWMUT']) and lat and 42.33 <= lat <= 42.35:
+        neighborhood_data.update({
+            'neighborhood': 'South End',
+            'market_trends': [
+                'Victorian architecture premium',
+                'LGBTQ+ friendly community',
+                'Restaurant and nightlife hub',
+                'Luxury condo conversions'
+            ],
+            'transit_accessibility': 'Excellent - Orange Line access',
+            'walkability_score': 'Very High'
+        })
+    
+    # North End
+    elif any(word in combined_address for word in ['HANOVER', 'SALEM', 'PRINCE', 'NORTH END']):
+        neighborhood_data.update({
+            'neighborhood': 'North End',
+            'market_trends': [
+                'Italian heritage tourism',
+                'Historic preservation requirements',
+                'Dense residential development',
+                'Waterfront proximity premium'
+            ],
+            'transit_accessibility': 'Good - Walking distance to downtown',
+            'walkability_score': 'Very High'
+        })
+    
+    # Cambridge Street Corridor
+    elif 'CAMBRIDGE' in combined_address and any(word in combined_address for word in ['STREET', 'ST']):
+        neighborhood_data.update({
+            'neighborhood': 'West End',
+            'market_trends': [
+                'Medical district proximity',
+                'Mixed-use development opportunities',
+                'Transit-oriented development'
+            ],
+            'transit_accessibility': 'Excellent - Red/Green Line access',
+            'walkability_score': 'High'
+        })
+    
+    # Dorchester
+    elif any(word in combined_address for word in ['DORCHESTER', 'BLUE HILL', 'COLUMBIA', 'UPHAMS']):
+        neighborhood_data.update({
+            'neighborhood': 'Dorchester',
+            'market_trends': [
+                'Affordable housing development',
+                'Diverse immigrant communities',
+                'Transit expansion benefits',
+                'Gentrification concerns'
+            ],
+            'transit_accessibility': 'Good - Red Line access',
+            'walkability_score': 'Moderate'
+        })
+    
+    # Jamaica Plain
+    elif any(word in combined_address for word in ['JAMAICA', 'CENTRE ST', 'SOUTH ST']) and 'PLAIN' in combined_address:
+        neighborhood_data.update({
+            'neighborhood': 'Jamaica Plain',
+            'market_trends': [
+                'Arts and culture district',
+                'Craft brewing and dining scene',
+                'Transit-oriented development',
+                'Mixed-income housing initiatives'
+            ],
+            'transit_accessibility': 'Excellent - Orange Line access',
+            'walkability_score': 'High'
+        })
+    
+    # Roxbury
+    elif any(word in combined_address for word in ['ROXBURY', 'DUDLEY', 'MALCOLM X']):
+        neighborhood_data.update({
+            'neighborhood': 'Roxbury',
+            'market_trends': [
+                'Urban renewal and redevelopment',
+                'Community-focused development',
+                'Affordable housing priorities',
+                'Cultural and historic preservation'
+            ],
+            'transit_accessibility': 'Good - Orange Line access',
+            'walkability_score': 'Moderate'
+        })
+    
+    # Somerville (technically not Boston but often included)
+    elif any(word in combined_address for word in ['SOMERVILLE', 'DAVIS', 'PORTER']):
+        neighborhood_data.update({
+            'neighborhood': 'Somerville',
+            'market_trends': [
+                'Young professional demographic',
+                'Tech industry growth',
+                'Dense residential development',
+                'Green Line extension benefits'
+            ],
+            'transit_accessibility': 'Excellent - Red Line access',
+            'walkability_score': 'Very High'
+        })
+    
+    # Use coordinate-based detection if address-based failed
+    if neighborhood_data['neighborhood'] == 'Unknown' and lat and lon:
+        coord_neighborhood = detect_neighborhood_by_coordinates(lat, lon)
+        if coord_neighborhood:
+            neighborhood_data.update(coord_neighborhood)
+    
+    return neighborhood_data
+
+def detect_neighborhood_by_coordinates(lat: float, lon: float) -> Dict:
+    """Detect neighborhood based on coordinates as fallback"""
+    
+    # Allston/Brighton area
+    if 42.34 <= lat <= 42.37 and -71.15 <= lon <= -71.11:
+        return {
+            'neighborhood': 'Allston/Brighton',
+            'market_trends': ['Student housing market', 'Transit accessibility'],
+            'transit_accessibility': 'Good - Green Line',
+            'walkability_score': 'High'
+        }
+    
+    # Back Bay/South End
+    elif 42.34 <= lat <= 42.36 and -71.09 <= lon <= -71.06:
+        return {
+            'neighborhood': 'Back Bay/South End',
+            'market_trends': ['Luxury market', 'Historic properties'],
+            'transit_accessibility': 'Excellent - Multiple lines',
+            'walkability_score': 'Very High'
+        }
+    
+    # Downtown/Financial District  
+    elif 42.35 <= lat <= 42.36 and -71.06 <= lon <= -71.05:
+        return {
+            'neighborhood': 'Downtown',
+            'market_trends': ['Commercial development', 'Mixed-use opportunities'],
+            'transit_accessibility': 'Excellent - Transit hub',
+            'walkability_score': 'Very High'
+        }
+    
+    # Dorchester
+    elif 42.28 <= lat <= 42.32 and -71.10 <= lon <= -71.05:
+        return {
+            'neighborhood': 'Dorchester',
+            'market_trends': ['Affordable housing', 'Community development'],
+            'transit_accessibility': 'Good - Red Line',
+            'walkability_score': 'Moderate'
+        }
+    
+    # Jamaica Plain
+    elif 42.30 <= lat <= 42.33 and -71.12 <= lon <= -71.10:
+        return {
+            'neighborhood': 'Jamaica Plain',
+            'market_trends': ['Arts district', 'Mixed-income development'],
+            'transit_accessibility': 'Excellent - Orange Line',
+            'walkability_score': 'High'
+        }
+    
+    return None
 
 def identify_regulatory_requirements(analysis: Dict) -> Dict:
     """Identify regulatory requirements for development"""
@@ -241,8 +473,8 @@ def identify_regulatory_requirements(analysis: Dict) -> Dict:
             requirements['estimated_approval_time'] = '18-30 months'
         
         # Affordable housing typically required for residential projects >10 units
-        property_type = parcel_data.get('property_type', '').lower()
-        if 'family' in property_type or 'residential' in property_type:
+        property_type = parcel_data.get('property_type', '')
+        if property_type and isinstance(property_type, str) and ('family' in property_type.lower() or 'residential' in property_type.lower()):
             requirements['affordable_housing_req'] = 'Likely if >10 units'
         
     except Exception as e:
@@ -513,13 +745,35 @@ def format_analysis_for_llm(analysis: Dict) -> str:
     return formatted
 
 if __name__ == "__main__":
-    # Test comprehensive analysis
-    test_analysis = analyze_property_comprehensive("263", "N Harvard", "St", "", "")
+    # Test the property analyzer with different neighborhoods
+    test_addresses = [
+        ("263", "N Harvard", "St", "", ""),  # Allston - original test
+        ("100", "BOYLSTON", "ST", "", ""),   # Back Bay - commercial
+        ("123", "Centre", "St", "", "")      # Jamaica Plain - residential
+    ]
     
-    # Print formatted analysis
-    formatted_output = format_analysis_for_llm(test_analysis)
-    print(formatted_output)
-    
-    # Save detailed analysis to file
-    with open('sample_property_analysis.json', 'w') as f:
-        json.dump(test_analysis, f, indent=2) 
+    for i, (num, street, suffix, unit, _) in enumerate(test_addresses):
+        address = f"{num} {street} {suffix}"
+        print(f"\n{'='*60}")
+        print(f"TEST {i+1}: Analyzing property: {address}")
+        print('='*60)
+        
+        analysis = analyze_property_comprehensive(num, street, suffix, unit, "")
+        
+        # Print key results
+        neighborhood = analysis.get('market_context', {}).get('neighborhood', 'Unknown')
+        zoning = analysis.get('zoning_analysis', {}).get('zoning_info', {}).get('zoning_district', 'Unknown')
+        value = analysis.get('parcel_data', {}).get('fy2025_total_value', 'Unknown')
+        
+        print(f"Neighborhood: {neighborhood}")
+        print(f"Zoning: {zoning}")  
+        print(f"Value: {value}")
+        
+        if i == 0:  # Only full report for first address
+            report = format_analysis_for_llm(analysis)
+            print("\nFull Report:")
+            print(report)
+            
+            # Save detailed analysis
+            with open('sample_property_analysis.json', 'w') as f:
+                json.dump(analysis, f, indent=2) 

@@ -30,69 +30,234 @@ def get_zoning_by_coordinates(lat: float, lon: float) -> Dict[str, Optional[str]
     }
     
     try:
-        # Try Boston GIS Planning services first
-        planning_url = f"{BOSTON_GIS_BASE}/Planning/OpenData/MapServer/identify"
-        params = {
-            'f': 'json',
-            'tolerance': 5,
-            'returnGeometry': 'false',
-            'imageDisplay': '1,1,96',
-            'mapExtent': f'{lon-0.001},{lat-0.001},{lon+0.001},{lat+0.001}',
-            'geometry': f'{{"x":{lon},"y":{lat},"spatialReference":{{"wkid":4326}}}}',
-            'geometryType': 'esriGeometryPoint',
-            'sr': '4326',
-            'layers': 'all'
-        }
+        # Try Boston GIS Planning services first with multiple potential layers
+        planning_base_url = f"{BOSTON_GIS_BASE}/Planning"
         
-        response = requests.get(planning_url, params=params, timeout=15)
-        if response.status_code == 200:
-            data = response.json()
-            if 'results' in data and data['results']:
-                for result in data['results']:
-                    attributes = result.get('attributes', {})
+        # Try different service endpoints
+        service_endpoints = [
+            f"{planning_base_url}/OpenData/MapServer/identify",
+            f"{BOSTON_GIS_BASE}/OpenData/MapServer/identify", 
+            f"https://services.arcgis.com/sFnw0xNflSi8J0qw/ArcGIS/rest/services/Zoning_Subdistricts/FeatureServer/0/query"
+        ]
+        
+        for endpoint in service_endpoints:
+            try:
+                if "query" in endpoint:
+                    # For ArcGIS Feature Service query
+                    params = {
+                        'f': 'json',
+                        'where': '1=1',
+                        'geometry': f'{lon},{lat}',
+                        'geometryType': 'esriGeometryPoint',
+                        'spatialRel': 'esriSpatialRelIntersects',
+                        'outFields': '*',
+                        'returnGeometry': 'false'
+                    }
+                else:
+                    # For MapServer identify service
+                    params = {
+                        'f': 'json',
+                        'tolerance': 10,
+                        'returnGeometry': 'false',
+                        'imageDisplay': '1,1,96',
+                        'mapExtent': f'{lon-0.001},{lat-0.001},{lon+0.001},{lat+0.001}',
+                        'geometry': f'{{"x":{lon},"y":{lat},"spatialReference":{{"wkid":4326}}}}',
+                        'geometryType': 'esriGeometryPoint',
+                        'sr': '4326',
+                        'layers': 'all'
+                    }
+                
+                print(f"Trying zoning lookup at: {endpoint}")
+                response = requests.get(endpoint, params=params, timeout=15)
+                
+                if response.status_code == 200:
+                    data = response.json()
                     
-                    # Extract zoning information from attributes
-                    for key, value in attributes.items():
-                        key_lower = key.lower()
-                        if 'zon' in key_lower and 'district' in key_lower:
-                            zoning_data['zoning_district'] = value
-                        elif 'zon' in key_lower and ('code' in key_lower or 'class' in key_lower):
-                            zoning_data['zoning_code'] = value
-                        elif 'height' in key_lower:
-                            zoning_data['height_limit'] = value
-                        elif 'far' in key_lower or 'floor area ratio' in key_lower:
-                            zoning_data['far_limit'] = value
-                        elif 'overlay' in key_lower:
-                            zoning_data['overlay_district'] = value
-                        elif 'plan' in key_lower and 'area' in key_lower:
-                            zoning_data['planning_area'] = value
+                    # Handle different response structures
+                    results = []
+                    if 'results' in data:
+                        results = data['results']
+                    elif 'features' in data and data['features']:
+                        results = [{'attributes': feature['attributes']} for feature in data['features']]
+                    
+                    if results:
+                        print(f"Found {len(results)} zoning features")
+                        
+                        # Extract zoning information from results
+                        for result in results:
+                            attributes = result.get('attributes', {})
+                            
+                            # Try multiple field name patterns for zoning district
+                            for key, value in attributes.items():
+                                if value is None or value == '' or str(value).lower() in ['null', 'none', '<null>']:
+                                    continue
+                                    
+                                key_lower = str(key).lower()
+                                value_str = str(value).strip()
+                                
+                                # Skip obviously invalid values
+                                if len(value_str) < 2 or value_str.lower() in ['null', 'none', 'n/a', '']:
+                                    continue
+                                
+                                # Zoning district patterns - be more specific
+                                if any(pattern in key_lower for pattern in ['zone', 'district', 'subdistrict']):
+                                    if not zoning_data['zoning_district'] and len(value_str) <= 20:  # Reasonable length
+                                        zoning_data['zoning_district'] = value_str
+                                        print(f"Found zoning district: '{value_str}' in field '{key}'")
+                                
+                                # Other zoning attributes
+                                elif 'height' in key_lower and not zoning_data['height_limit'] and any(char.isdigit() for char in value_str):
+                                    zoning_data['height_limit'] = value_str
+                                elif ('far' in key_lower or 'floor area ratio' in key_lower) and not zoning_data['far_limit'] and any(char.isdigit() for char in value_str):
+                                    zoning_data['far_limit'] = value_str
+                                elif 'overlay' in key_lower and not zoning_data['overlay_district']:
+                                    zoning_data['overlay_district'] = value_str
+                                elif any(word in key_lower for word in ['plan', 'area', 'neighborhood']) and not zoning_data['planning_area']:
+                                    if len(value_str) > 3 and len(value_str) <= 50:  # Reasonable length
+                                        zoning_data['planning_area'] = value_str
+                        
+                        # If we got a valid zoning district, set source and break
+                        if zoning_data['zoning_district'] and zoning_data['zoning_district'].lower() not in ['null', 'none']:
+                            zoning_data['zoning_source'] = 'Boston GIS Services'
+                            print(f"Successfully found zoning: {zoning_data['zoning_district']}")
+                            break
+                        else:
+                            print("No valid zoning district found in this endpoint's results")
+                            
+            except Exception as e:
+                print(f"Error with endpoint {endpoint}: {e}")
+                continue
     
     except Exception as e:
-        print(f"Error with GIS service: {e}")
+        print(f"Error with GIS services: {e}")
     
-    # Try alternative approaches if primary didn't work
+    # Try alternative data sources if no zoning found
     if not zoning_data['zoning_district']:
         try:
-            # Try the city's data portal
-            data_portal_url = "https://data.boston.gov/api/3/action/datastore_search"
-            params = {
-                'resource_id': 'zoning-districts',  # This might need adjustment
-                'limit': 1,
-                'q': f'lat:{lat} lon:{lon}'
-            }
+            # Try Boston Open Data portal
+            data_portal_endpoints = [
+                "https://data.boston.gov/api/3/action/datastore_search",
+                "https://opendata.boston.gov/api/3/action/datastore_search"
+            ]
             
-            response = requests.get(data_portal_url, params=params, timeout=10)
-            if response.status_code == 200:
-                data = response.json()
-                if data.get('success') and data.get('result', {}).get('records'):
-                    record = data['result']['records'][0]
-                    zoning_data['zoning_district'] = record.get('zoning_district')
-                    zoning_data['zoning_code'] = record.get('zoning_code')
+            for portal_url in data_portal_endpoints:
+                try:
+                    # Search for zoning-related datasets
+                    list_params = {'action': 'package_list'}
+                    list_response = requests.get(portal_url.replace('datastore_search', 'package_list'), 
+                                               params=list_params, timeout=10)
+                    
+                    if list_response.status_code == 200:
+                        packages = list_response.json().get('result', [])
+                        zoning_packages = [p for p in packages if 'zon' in str(p).lower()]
+                        print(f"Found potential zoning datasets: {zoning_packages[:3]}")
+                        
+                except Exception as e:
+                    print(f"Error exploring data portal {portal_url}: {e}")
+                    continue
                     
         except Exception as e:
-            print(f"Error with data portal: {e}")
+            print(f"Error with data portal search: {e}")
+    
+    # If still no data, try to infer basic zoning from neighborhood patterns
+    if not zoning_data['zoning_district']:
+        neighborhood_zone = infer_zoning_from_location(lat, lon)
+        if neighborhood_zone:
+            zoning_data.update(neighborhood_zone)
+            zoning_data['zoning_source'] = 'Inferred from location'
     
     return zoning_data
+
+def infer_zoning_from_location(lat: float, lon: float) -> Dict[str, Optional[str]]:
+    """Infer basic zoning information from geographic location in Boston"""
+    
+    # Basic Boston neighborhood zones based on approximate coordinates
+    # This is a fallback when APIs don't work
+    
+    inferred_data = {}
+    
+    # Allston/Brighton area (approximate bounds)
+    if 42.34 <= lat <= 42.37 and -71.15 <= lon <= -71.11:
+        inferred_data = {
+            'zoning_district': '2F-5000',  # Common in Allston/Brighton
+            'zoning_code': 'Allston/Brighton Neighborhood District',
+            'height_limit': '35 ft',
+            'far_limit': '0.6',
+            'planning_area': 'Allston/Brighton Neighborhood District',
+            'allowed_uses': 'Two-family dwelling, Single-family dwelling'
+        }
+    
+    # Back Bay/South End area
+    elif 42.34 <= lat <= 42.36 and -71.09 <= lon <= -71.06:
+        inferred_data = {
+            'zoning_district': 'R-8',
+            'zoning_code': 'High-density residential', 
+            'height_limit': '80 ft',
+            'far_limit': '3.0',
+            'planning_area': 'Back Bay/South End'
+        }
+    
+    # Downtown/Financial District
+    elif 42.35 <= lat <= 42.36 and -71.06 <= lon <= -71.05:
+        inferred_data = {
+            'zoning_district': 'B-8',
+            'zoning_code': 'High-density commercial',
+            'height_limit': 'No limit',
+            'far_limit': '8.0+',
+            'planning_area': 'Downtown'
+        }
+    
+    # Cambridge Street Corridor
+    elif 42.36 <= lat <= 42.37 and -71.07 <= lon <= -71.05:
+        inferred_data = {
+            'zoning_district': 'B-2',
+            'zoning_code': 'Neighborhood business',
+            'height_limit': '55 ft', 
+            'far_limit': '2.0',
+            'planning_area': 'Cambridge Street District'
+        }
+        
+    # North End
+    elif 42.36 <= lat <= 42.37 and -71.06 <= lon <= -71.04:
+        inferred_data = {
+            'zoning_district': 'R-4',
+            'zoning_code': 'Multi-family residential',
+            'height_limit': '35 ft',
+            'far_limit': '1.0',
+            'planning_area': 'North End'
+        }
+    
+    # Dorchester
+    elif 42.28 <= lat <= 42.32 and -71.10 <= lon <= -71.05:
+        inferred_data = {
+            'zoning_district': 'R-2',
+            'zoning_code': 'Two-family residential',
+            'height_limit': '35 ft',
+            'far_limit': '0.7',
+            'planning_area': 'Dorchester'
+        }
+    
+    # Roxbury
+    elif 42.31 <= lat <= 42.34 and -71.10 <= lon <= -71.08:
+        inferred_data = {
+            'zoning_district': 'R-2',
+            'zoning_code': 'Mixed residential',
+            'height_limit': '35 ft',
+            'far_limit': '0.8',
+            'planning_area': 'Roxbury'
+        }
+    
+    # Jamaica Plain
+    elif 42.30 <= lat <= 42.33 and -71.12 <= lon <= -71.10:
+        inferred_data = {
+            'zoning_district': 'R-4', 
+            'zoning_code': 'Multi-family residential',
+            'height_limit': '35 ft',
+            'far_limit': '1.0',
+            'planning_area': 'Jamaica Plain'
+        }
+        
+    return inferred_data
 
 def get_zoning_by_address(address: str) -> Dict[str, Optional[str]]:
     """Get zoning information by street address"""
@@ -259,7 +424,12 @@ def get_zoning_requirements(zoning_district: str) -> Dict[str, Optional[str]]:
             'max_height': '35 ft',
             'max_far': '0.6',
             'front_setback': '10-20 ft',
-            'allowed_uses': ['Two-family dwelling', 'Single-family dwelling']
+            'side_setback': '8 ft',
+            'rear_setback': '25 ft',
+            'max_lot_coverage': '50%',
+            'allowed_uses': ['Two-family dwelling', 'Single-family dwelling', 'Accessory uses'],
+            'conditional_uses': ['Home occupation', 'Accessory dwelling unit'],
+            'design_standards': ['Must comply with Allston-Brighton Neighborhood District requirements']
         },
         # Commercial Districts
         'B-2': {
@@ -274,7 +444,7 @@ def get_zoning_requirements(zoning_district: str) -> Dict[str, Optional[str]]:
         }
     }
     
-    if zoning_district in zoning_mappings:
+    if zoning_district and zoning_district in zoning_mappings:
         requirements.update(zoning_mappings[zoning_district])
     
     return requirements
@@ -333,16 +503,25 @@ def analyze_development_potential(zoning_data: Dict) -> Dict[str, Optional[str]]
     zoning_info = zoning_data.get('zoning_info', {})
     planning_context = zoning_data.get('planning_context', {})
     
-    # Analyze based on zoning district
+    # Analyze based on zoning district (with proper null checks)
     district = zoning_info.get('zoning_district', '')
     
-    if district.startswith('R-'):
-        potential['mixed_use_potential'] = 'Limited'
-        potential['article_80_required'] = 'If over 20,000 sq ft'
-    elif district.startswith('B-'):
-        potential['mixed_use_potential'] = 'High'
-        potential['article_80_required'] = 'If over 20,000 sq ft'
-        
+    if district and isinstance(district, str):
+        if district.startswith('R-') or '2F-' in district:
+            potential['mixed_use_potential'] = 'Limited'
+            potential['article_80_required'] = 'If over 20,000 sq ft'
+            potential['development_complexity'] = 'Medium'
+        elif district.startswith('B-'):
+            potential['mixed_use_potential'] = 'High'
+            potential['article_80_required'] = 'If over 20,000 sq ft'
+            potential['development_complexity'] = 'Medium'
+            
+        # Specific analysis for 2F-5000
+        if district == '2F-5000':
+            potential['upzoning_opportunity'] = 'Possible - two-family to multi-family conversion'
+            potential['density_bonus_eligible'] = 'Transit-oriented development potential'
+            potential['affordable_housing_req'] = 'Required if >10 units'
+    
     # Check for special circumstances
     if planning_context.get('transit_oriented'):
         potential['transit_bonus_eligible'] = 'Yes'
