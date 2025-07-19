@@ -119,8 +119,8 @@ def assess_development_potential(parcel_data: Dict, zoning_analysis: Dict) -> Di
         living_area_str = parcel_data.get('living_area', '0')
         
         # Extract numeric values (basic parsing)
-        lot_size = extract_numeric_value(lot_size_str)
-        living_area = extract_numeric_value(living_area_str)
+        lot_size = extract_numeric_value(lot_size_str) if lot_size_str else 0
+        living_area = extract_numeric_value(living_area_str) if living_area_str else 0
         
         if lot_size > 0 and living_area > 0:
             current_far = living_area / lot_size
@@ -129,15 +129,15 @@ def assess_development_potential(parcel_data: Dict, zoning_analysis: Dict) -> Di
             # Check against zoning FAR limits
             zoning_req = zoning_analysis.get('zoning_requirements', {})
             max_far_str = zoning_req.get('max_far', '0')
-            max_far = extract_numeric_value(max_far_str)
+            max_far = extract_numeric_value(max_far_str) if max_far_str else 0
             
             if max_far > current_far:
                 assessment['density_increase_possible'] = True
                 assessment['expansion_options'].append(f"Can increase FAR by {max_far - current_far:.2f}")
         
-        # Analyze zoning district
+        # Analyze zoning district (with null checks)
         zoning_district = zoning_analysis.get('zoning_info', {}).get('zoning_district')
-        if zoning_district:
+        if zoning_district and isinstance(zoning_district, str):
             if zoning_district.startswith('R-'):
                 assessment['development_feasibility'] = 'Medium'
                 assessment['expansion_options'].append('Residential intensification possible')
@@ -269,10 +269,10 @@ def identify_development_opportunities(analysis: Dict) -> Dict:
         development_assessment = analysis.get('development_assessment', {})
         
         # Analyze based on current property characteristics
-        lot_size = extract_numeric_value(parcel_data.get('lot_size', '0'))
+        lot_size = extract_numeric_value(parcel_data.get('lot_size', '0')) if parcel_data.get('lot_size') else 0
         year_built = parcel_data.get('year_built', '')
         
-        if year_built and year_built.isdigit() and int(year_built) < 1950:
+        if year_built and isinstance(year_built, str) and year_built.isdigit() and int(year_built) < 1950:
             opportunities['primary_opportunities'].append('Historic renovation/adaptive reuse')
             opportunities['value_creation_strategies'].append('Historic tax credits potential')
         
@@ -282,7 +282,7 @@ def identify_development_opportunities(analysis: Dict) -> Dict:
         
         # Analyze zoning opportunities
         zoning_district = zoning_analysis.get('zoning_info', {}).get('zoning_district', '')
-        if 'B-' in zoning_district:  # Commercial zoning
+        if zoning_district and isinstance(zoning_district, str) and 'B-' in zoning_district:  # Commercial zoning
             opportunities['primary_opportunities'].append('Mixed-use development')
             opportunities['development_scenarios'].append('Ground-floor retail + residential')
             opportunities['financial_potential'] = 'High'
@@ -295,6 +295,14 @@ def identify_development_opportunities(analysis: Dict) -> Dict:
         if planning_context.get('transit_oriented'):
             opportunities['secondary_opportunities'].append('Transit-oriented density bonus')
             opportunities['market_positioning'].append('Transit-accessible luxury housing')
+        
+        # If we have property value data, assess financial potential
+        total_value_str = parcel_data.get('fy2025_total_value', '')
+        if total_value_str and isinstance(total_value_str, str) and '$' in total_value_str:
+            value = extract_numeric_value(total_value_str)
+            if value > 1000000:
+                opportunities['financial_potential'] = 'High'
+                opportunities['value_creation_strategies'].append('High-value property with development potential')
         
     except Exception as e:
         print(f"Error identifying opportunities: {e}")
@@ -339,8 +347,13 @@ def assess_risks_and_challenges(analysis: Dict) -> Dict:
         # Financial risks
         parcel_data = analysis.get('parcel_data', {})
         total_value = parcel_data.get('fy2025_total_value', '')
-        if total_value and extract_numeric_value(total_value) > 1000000:
+        if total_value and isinstance(total_value, str) and extract_numeric_value(total_value) > 1000000:
             risks['financial_risks'].append('High acquisition cost basis')
+        
+        # Add risk if no zoning data available
+        zoning_info = analysis.get('zoning_analysis', {}).get('zoning_info', {})
+        if not zoning_info.get('zoning_district'):
+            risks['regulatory_risks'].append('Limited zoning information available - requires detailed analysis')
         
         # Calculate overall risk
         total_risks = (len(risks['regulatory_risks']) + len(risks['market_risks']) + 

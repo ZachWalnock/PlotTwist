@@ -138,17 +138,65 @@ def get_enhanced_parcel_data(parcelID: str, streetNumber: str, streetName: str, 
         'exterior_condition': None,
     }
     
-    # Extract building values
-    building_values = get_building_value(soup)
-    property_data.update({
-        'fy2025_building_value': building_values.get("FY2025 Building value"),
-        'fy2025_land_value': building_values.get("FY2025 Land value"),
-        'fy2025_total_value': building_values.get("FY2025 Total value")
-    })
+    # Try to parse the search results table first
+    # Look for table rows that contain parcel information
+    rows = soup.find_all('tr')
+    for row in rows:
+        cells = row.find_all('td')
+        if len(cells) >= 4:  # Parcel results usually have multiple columns
+            for i, cell in enumerate(cells):
+                cell_text = cell.get_text(strip=True)
+                
+                # Check if this looks like a parcel ID (numeric)
+                if cell_text.isdigit() and len(cell_text) >= 10:
+                    property_data['parcel_id'] = cell_text
+                
+                # Check if this looks like a property value (starts with $)
+                if cell_text.startswith('$') and ',' in cell_text:
+                    property_data['fy2025_total_value'] = cell_text
+                
+                # Check for owner information (usually in caps)
+                if cell_text.isupper() and len(cell_text) > 5 and 'TRUST' in cell_text:
+                    property_data['owner'] = cell_text
     
-    # Extract detailed property information from tables
-    # Look for property details in various table structures
-    for table in soup.find_all('table'):
+    # Look for "Details" link to get more detailed information
+    details_links = soup.find_all('a', href=True)
+    for link in details_links:
+        if 'details' in link.get('href', '').lower() or link.get_text(strip=True).lower() == 'details':
+            details_url = link.get('href')
+            if not details_url.startswith('http'):
+                details_url = 'https://www.cityofboston.gov' + details_url
+            
+            # Fetch detailed property information
+            try:
+                details_response = requests.get(details_url, headers=headers, timeout=10)
+                details_soup = BeautifulSoup(details_response.content, 'html.parser')
+                
+                # Extract detailed information from the details page
+                property_data.update(parse_property_details(details_soup))
+                break
+            except Exception as e:
+                print(f"Error fetching property details: {e}")
+                continue
+    
+    # Extract building values if available on main page
+    building_values = get_building_value(soup)
+    if any(building_values.values()):
+        property_data.update({
+            'fy2025_building_value': building_values.get("FY2025 Building value"),
+            'fy2025_land_value': building_values.get("FY2025 Land value"),
+            'fy2025_total_value': building_values.get("FY2025 Total value")
+        })
+    
+    return property_data
+
+def parse_property_details(soup) -> Dict[str, Optional[str]]:
+    """Parse detailed property information from the property details page"""
+    details = {}
+    
+    # Look for various table structures and text patterns
+    tables = soup.find_all('table')
+    for table in tables:
         rows = table.find_all('tr')
         for row in rows:
             cells = row.find_all(['td', 'th'])
@@ -156,49 +204,61 @@ def get_enhanced_parcel_data(parcelID: str, streetNumber: str, streetName: str, 
                 label = cells[0].get_text(strip=True).lower()
                 value = cells[1].get_text(strip=True)
                 
-                # Map labels to our property data fields
-                if 'year built' in label or 'built' in label:
-                    property_data['year_built'] = value
-                elif 'lot size' in label:
-                    property_data['lot_size'] = value
-                elif 'living area' in label or 'floor area' in label:
-                    property_data['living_area'] = value
+                # Map common field labels to our data structure
+                if 'lot size' in label or 'land area' in label:
+                    details['lot_size'] = value
+                elif 'living area' in label or 'gross floor area' in label:
+                    details['living_area'] = value
+                elif 'year built' in label or 'built' in label:
+                    details['year_built'] = value
                 elif 'bedrooms' in label or 'bed' in label:
-                    property_data['bedrooms'] = value
+                    details['bedrooms'] = value
                 elif 'bathrooms' in label or 'bath' in label:
-                    property_data['bathrooms'] = value
-                elif 'parking' in label:
-                    property_data['parking_spaces'] = value
+                    details['bathrooms'] = value
+                elif 'property type' in label or 'use code' in label:
+                    details['property_type'] = value
                 elif 'stories' in label or 'floors' in label:
-                    property_data['stories'] = value
-                elif 'owner' in label and not property_data['owner']:
-                    property_data['owner'] = value
-                elif 'property type' in label:
-                    property_data['property_type'] = value
-                elif 'classification' in label:
-                    property_data['classification_code'] = value
+                    details['stories'] = value
+                elif 'parking' in label:
+                    details['parking_spaces'] = value
                 elif 'zoning' in label:
-                    property_data['zoning'] = value
+                    details['zoning'] = value
                 elif 'land use' in label:
-                    property_data['land_use'] = value
+                    details['land_use'] = value
                 elif 'building use' in label:
-                    property_data['building_use'] = value
+                    details['building_use'] = value
                 elif 'condition' in label:
-                    property_data['exterior_condition'] = value
+                    details['exterior_condition'] = value
     
-    # Try to find owner address in owner information section
-    owner_sections = soup.find_all(text=re.compile(r'owner', re.IGNORECASE))
-    for section in owner_sections:
-        parent = section.parent
-        if parent:
-            # Look for address patterns in nearby text
-            for sibling in parent.find_next_siblings():
-                text = sibling.get_text(strip=True)
-                if re.search(r'\d+.*(?:st|ave|rd|blvd|street|avenue|road|boulevard)', text, re.IGNORECASE):
-                    property_data['owner_address'] = text
-                    break
+    # Look for specific patterns in the text
+    page_text = soup.get_text()
     
-    return property_data
+    # Try to extract year built from various patterns
+    year_patterns = [
+        r'year built:?\s*(\d{4})',
+        r'built:?\s*(\d{4})',
+        r'constructed:?\s*(\d{4})'
+    ]
+    
+    for pattern in year_patterns:
+        match = re.search(pattern, page_text, re.IGNORECASE)
+        if match:
+            details['year_built'] = match.group(1)
+            break
+    
+    # Try to extract lot size
+    lot_patterns = [
+        r'lot size:?\s*([\d,]+\.?\d*)\s*sq\.?\s*ft',
+        r'land area:?\s*([\d,]+\.?\d*)\s*sq\.?\s*ft'
+    ]
+    
+    for pattern in lot_patterns:
+        match = re.search(pattern, page_text, re.IGNORECASE)
+        if match:
+            details['lot_size'] = match.group(1) + ' sq ft'
+            break
+    
+    return details
 
 def get_parcel_basics(parcelID: str, streetNumber: str, streetName: str, streetSuffix: str, unitNumber: str) -> Dict[str, Optional[str]]:
     # Use the enhanced version instead of the old function

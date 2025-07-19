@@ -1,0 +1,43 @@
+{
+  "property_summary": {
+    "address": "263 N Harvard St",
+    "parcel_id": "",
+    "analysis_date": null,
+    "coordinates": {
+      "latitude": 42.3607186,
+      "longitude": -71.1297749
+    }
+  },
+  "parcel_data": {
+    "parcel_id": "2201486000",
+    "address": "263 N Harvard St",
+    "unit_number": "",
+    "property_type": null,
+    "classification_code": null,
+    "lot_size": null,
+    "living_area": null,
+    "year_built": null,
+    "bedrooms": null,
+    "bathrooms": null,
+    "parking_spaces": null,
+    "stories": null,
+    "fy2025_building_value": null,
+    "fy2025_land_value": null,
+    "fy2025_total_value": "$1,607,700",
+    "previous_year_value": null,
+    "owner": "THE HELPING HAND TRUST",
+    "owner_address": null,
+    "zoning": null,
+    "land_use": null,
+    "building_use": null,
+    "exterior_condition": null
+  },
+  "zoning_analysis": {},
+  "development_assessment": {},
+  "market_context": {},
+  "regulatory_requirements": {},
+  "development_opportunities": {},
+  "risks_and_challenges": {},
+  "recommendations": {},
+  "error": "'NoneType' object has no attribute 'startswith'"
+}
