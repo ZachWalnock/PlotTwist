@@ -38,6 +38,7 @@ def ask_llm(chat_history: list[dict[str, str]], use_tools: bool = True) -> str:
 
 
 def ask_real_estate_agent(property_info: str, MAX_TOOL_CALLS: int = 3) -> str:
+    print("Real estate agent in action....")
     user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", property_info)
     chat_history = [
         {"role": "user", "content": "You are an expert real estate developer assistant. Do nor "},
@@ -46,6 +47,7 @@ def ask_real_estate_agent(property_info: str, MAX_TOOL_CALLS: int = 3) -> str:
     response = ask_llm(chat_history)
     tool_calls = 0
     while response.candidates[-1].content.parts[-1].function_call and tool_calls < MAX_TOOL_CALLS:
+        print("Tool call detected....")
         function = response.candidates[-1].content.parts[-1].function_call
         tool_name = function.name
         tool_args = function.args
@@ -54,6 +56,7 @@ def ask_real_estate_agent(property_info: str, MAX_TOOL_CALLS: int = 3) -> str:
         chat_history.append({"role": "user", "content": tool_result + f"\n\nYou have {MAX_TOOL_CALLS - tool_calls} tool calls left."})
         tool_calls += 1
         response = ask_llm(chat_history)
+    print("Answer incoming....")
     response = ask_llm(chat_history, use_tools=False)
     return response.candidates[-1].content.parts[-1].text
 

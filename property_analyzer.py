@@ -5,7 +5,7 @@ for real estate development opportunity analysis.
 
 import json
 from typing import Dict, Optional
-from main import get_enhanced_parcel_data
+from data import get_enhanced_parcel_data
 from zoning_scraper import get_comprehensive_zoning_data
 from address_data import geocode_address
 
