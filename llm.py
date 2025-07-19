@@ -1,4 +1,5 @@
 from google import genai
+from google.genai import types
 from dotenv import load_dotenv
 import os
 import json
@@ -20,9 +21,16 @@ def ask_llm(chat_history: list[dict[str, str]], use_tools: bool = True) -> str:
     with open("tools.json", "r") as f:
         tools = json.load(f)
 
+    contents = []
+    for m in chat_history:
+        contents.append(types.Content(role=m["role"], parts=[types.Part.from_text(text=m["content"])]))
+    tools = types.Tool(function_declarations=tools)
+    config = types.GenerateContentConfig(tools=[tools] if use_tools else None)
+
     response = client.models.generate_content(
         model="gemini-2.5-flash",
-        contents="Explain bubble sort to me.",
+        contents=contents,
+        config=config
     )
 
 
@@ -30,28 +38,27 @@ def ask_llm(chat_history: list[dict[str, str]], use_tools: bool = True) -> str:
 
 
 def ask_real_estate_agent(property_info: str, MAX_TOOL_CALLS: int = 3) -> str:
+    print("Real estate agent in action....")
     user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", property_info)
     chat_history = [
-        {"role": "system", "content": "You are an expert real estate developer assistant."},
+        {"role": "user", "content": "You are an expert real estate developer assistant. Do nor "},
         {"role": "user", "content": user_prompt}
     ]
     response = ask_llm(chat_history)
-    print("="*100)
-    print(response)
     tool_calls = 0
-    while response.choices[-1].finish_reason == "tool_calls" and tool_calls < MAX_TOOL_CALLS:
-        print("="*100)
-        print("message", response.choices[-1].message)
-        function = response.choices[-1].message.tool_calls[-1].function
+    while response.candidates[-1].content.parts[-1].function_call and tool_calls < MAX_TOOL_CALLS:
+        print("Tool call detected....")
+        function = response.candidates[-1].content.parts[-1].function_call
         tool_name = function.name
-        tool_args = json.loads(function.arguments)
-        chat_history.append({"role": "assistant", "content": f"Calling tool: {tool_name} with args: {tool_args}"})
+        tool_args = function.args
+        chat_history.append({"role": "model", "content": f"Calling tool: {tool_name} with args: {tool_args}"})
         tool_result = globals()[tool_name](**tool_args)
         chat_history.append({"role": "user", "content": tool_result + f"\n\nYou have {MAX_TOOL_CALLS - tool_calls} tool calls left."})
         tool_calls += 1
         response = ask_llm(chat_history)
+    print("Answer incoming....")
     response = ask_llm(chat_history, use_tools=False)
-    return response.choices[-1].message.content
+    return response.candidates[-1].content.parts[-1].text
 
 if __name__ == "__main__":
     property_info = """## 1. Parcel Overview
@@ -81,13 +88,13 @@ if __name__ == "__main__":
 - **Front Setback:** Typically 10–20 ft
 - **FAR:** Approx. 0.5–0.6 (varies by parcel)"""
 
-    chat_history = [
-        {"role": "system", "content": "You are an expert real estate developer assistant."},
-        {"role": "user", "content": "Whats goign on in the news?"}
-    ]
+    # chat_history = [
+    #     {"role": "user", "content": "You are an expert real estate developer assistant. Use the tools provided to you to answer the user's question."},
+    #     {"role": "user", "content": property_info}
+    # ]
 
 
-    response = ask_llm("")
+    response = ask_real_estate_agent(property_info)
     print("="*100)
     print(response)
     

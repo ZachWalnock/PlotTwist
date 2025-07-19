@@ -87,5 +87,5 @@ Here's the property information:
 [PROPERTY_INFO]
 </PROPERTY_INFO>
 
-Please return a solid and creative development opportunity for this property.
+In your report, please include things like similar recent developments in the area, 
 """
