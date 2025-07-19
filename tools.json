@@ -1,19 +1,16 @@
 [
     {
-        "type": "function",
-        "function": {
-            "name": "web_search",
-            "description": "Search the web for real-time information.",
-            "parameters": {
-                "type": "object",
-                "properties": {
-                    "query": {
-                        "type": "string",
-                        "description": "The search query to find information online"
-                    }
-                },
-                "required": ["query"]
-            }
+        "name": "web_search",
+        "description": "Search the web for real-time information.",
+        "parameters": {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The search query to find information online"
+                }
+            },
+            "required": ["query"]
         }
     }
 ]
