@@ -1,0 +1,213 @@
+{
+  "property_summary": {
+    "address": "263 N Harvard St",
+    "parcel_id": "",
+    "analysis_date": null,
+    "coordinates": {
+      "latitude": 42.3607186,
+      "longitude": -71.1297749
+    }
+  },
+  "parcel_data": {
+    "parcel_id": "2201486000",
+    "address": "263 N Harvard St",
+    "unit_number": "",
+    "property_type": "Two Family",
+    "classification_code": "0104 (Residential Property  / TWO-FAM DWELLING)",
+    "lot_size": "11,525 sq ft",
+    "living_area": "3,539 sq ft",
+    "year_built": "1890",
+    "bedrooms": "6",
+    "bathrooms": "3",
+    "parking_spaces": "7",
+    "stories": "2.0",
+    "fy2025_building_value": "$923,500.00",
+    "fy2025_land_value": "$684,200.00",
+    "fy2025_total_value": "$1,607,700.00",
+    "previous_year_value": null,
+    "owner": "THE HELPING HAND TRUST",
+    "owner_address": "316 NORTH HARVARD ST C/O JAMES GEORGES ALLSTON MA 02134",
+    "zoning": null,
+    "land_use": "104 - TWO-FAM DWELLING",
+    "building_use": null,
+    "exterior_condition": "Average",
+    "building_style": "Conventional",
+    "total_rooms": "11",
+    "number_of_kitchens": "2",
+    "ac_type": "None",
+    "heat_type": "Ht Water/Steam",
+    "interior_condition": "Average",
+    "exterior_finish": "Wood Shake",
+    "foundation": "Stone"
+  },
+  "zoning_analysis": {
+    "address": "263 N Harvard St, Boston, MA",
+    "coordinates": {
+      "lat": 42.3607186,
+      "lon": -71.1297749
+    },
+    "zoning_info": {
+      "zoning_district": "2F-5000",
+      "zoning_code": "Allston/Brighton Neighborhood District",
+      "height_limit": "35 ft",
+      "far_limit": "0.6",
+      "setback_front": null,
+      "setback_side": null,
+      "setback_rear": null,
+      "allowed_uses": "Two-family dwelling, Single-family dwelling",
+      "overlay_district": null,
+      "planning_area": "Allston/Brighton Neighborhood District",
+      "article_80_required": null,
+      "affordable_housing_req": null,
+      "parking_requirements": null,
+      "lot_coverage_max": null,
+      "open_space_req": null,
+      "zoning_source": "Inferred from location"
+    },
+    "planning_context": {
+      "neighborhood": null,
+      "planning_district": null,
+      "transit_oriented": null,
+      "enterprise_zone": null,
+      "historic_district": null,
+      "flood_zone": null,
+      "article_25a_overlay": null,
+      "article_37_required": null,
+      "inclusionary_development": null,
+      "linkage_required": null,
+      "recent_developments": [],
+      "pending_rezonings": [],
+      "master_plan_area": null,
+      "opportunity_zone": null
+    },
+    "zoning_requirements": {
+      "min_lot_size": "5,000 sq ft per unit",
+      "min_lot_width": null,
+      "max_height": "35 ft",
+      "max_far": "0.6",
+      "front_setback": "10-20 ft",
+      "side_setback": "8 ft",
+      "rear_setback": "25 ft",
+      "max_lot_coverage": "50%",
+      "min_open_space": null,
+      "parking_ratio": null,
+      "allowed_uses": [
+        "Two-family dwelling",
+        "Single-family dwelling",
+        "Accessory uses"
+      ],
+      "conditional_uses": [
+        "Home occupation",
+        "Accessory dwelling unit"
+      ],
+      "prohibited_uses": [],
+      "design_standards": [
+        "Must comply with Allston-Brighton Neighborhood District requirements"
+      ]
+    },
+    "development_potential": {
+      "upzoning_opportunity": "Possible - two-family to multi-family conversion",
+      "density_bonus_eligible": "Transit-oriented development potential",
+      "article_80_required": "If over 20,000 sq ft",
+      "affordable_housing_req": "Required if >10 units",
+      "environmental_review": null,
+      "height_variance_possible": null,
+      "mixed_use_potential": "Limited",
+      "transit_bonus_eligible": null,
+      "development_complexity": "Medium",
+      "timeline_estimate": "18-36 months"
+    }
+  },
+  "development_assessment": {
+    "development_feasibility": "Medium",
+    "upzoning_potential": "Unknown",
+    "density_increase_possible": true,
+    "current_utilization": "FAR: 0.31",
+    "expansion_options": [
+      "Can increase FAR by 0.29"
+    ],
+    "zoning_compliance": "Unknown",
+    "variances_needed": [],
+    "development_timeline": "18-36 months"
+  },
+  "market_context": {
+    "neighborhood": "Allston",
+    "market_trends": [
+      "Student housing demand from nearby universities",
+      "Young professional influx",
+      "Transit-oriented development interest",
+      "Gentrification pressure increasing property values",
+      "Two-family home conversion opportunities",
+      "High-value market segment",
+      "Historic property potential"
+    ],
+    "comparable_developments": [],
+    "transit_accessibility": "Good - Green Line B accessible",
+    "walkability_score": "High - Urban neighborhood",
+    "demographic_trends": {},
+    "economic_indicators": {
+      "property_value_tier": "Premium",
+      "property_age": "Historic (100+ years)"
+    }
+  },
+  "regulatory_requirements": {
+    "article_80_review": false,
+    "affordable_housing_req": "Likely if >10 units",
+    "article_37_green_building": false,
+    "article_25a_flood_resilience": false,
+    "parking_requirements": "Unknown",
+    "historic_review": false,
+    "environmental_review": [],
+    "community_process": "Standard",
+    "estimated_approval_time": "6-18 months"
+  },
+  "development_opportunities": {
+    "primary_opportunities": [
+      "Historic renovation/adaptive reuse",
+      "Density increase/additional units",
+      "FAR optimization"
+    ],
+    "secondary_opportunities": [],
+    "financial_potential": "High",
+    "development_scenarios": [
+      "Multi-family development"
+    ],
+    "market_positioning": [],
+    "value_creation_strategies": [
+      "Historic tax credits potential",
+      "High-value property with development potential"
+    ]
+  },
+  "risks_and_challenges": {
+    "regulatory_risks": [],
+    "market_risks": [
+      "Student housing market volatility"
+    ],
+    "financial_risks": [
+      "High acquisition cost basis"
+    ],
+    "technical_challenges": [],
+    "timeline_risks": [],
+    "overall_risk_level": "Low"
+  },
+  "recommendations": {
+    "recommended_strategy": "Strategic Development",
+    "next_steps": [
+      "Detailed zoning analysis",
+      "Market study",
+      "Preliminary design development"
+    ],
+    "timeline_recommendation": "Medium-term (2-5 years)",
+    "key_considerations": [
+      "Monitor zoning changes and planning initiatives",
+      "Track comparable development projects",
+      "Maintain relationships with local planning officials"
+    ],
+    "professional_consultations": [],
+    "financial_structuring": [],
+    "risk_mitigation": [
+      "Address market risks: Student housing market volatility",
+      "Address financial risks: High acquisition cost basis"
+    ]
+  }
+}
