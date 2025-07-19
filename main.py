@@ -48,7 +48,7 @@ def get_building_value(soup):
     for tr in soup.find_all('tr'):
         tds = tr.find_all('td')
         for td in tds:
-            text = td.  
+            text = td.get_text(strip=True)
             if "FY2025 Building value:" in text:
                 # Get the next td or the text after the colon
                 next_td = td.find_next_sibling('td')
@@ -78,7 +78,8 @@ def get_building_value(soup):
     
     return information
 
-def get_parcel_basics(parcelID: str, streetNumber: str, streetName: str, streetSuffix: str, unitNumber: str) -> Dict[str, Optional[str]]:
+def get_enhanced_parcel_data(parcelID: str, streetNumber: str, streetName: str, streetSuffix: str, unitNumber: str) -> Dict[str, Optional[str]]:
+    """Enhanced parcel data extraction with all property details needed for development analysis"""
     # Headers to mimic a real browser request
     headers = {
         'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
@@ -102,16 +103,106 @@ def get_parcel_basics(parcelID: str, streetNumber: str, streetName: str, streetS
     
     soup = BeautifulSoup(response.content, 'html.parser')
     
-    # Find the "Details" link
-    details_link = soup.find('a', string=re.compile(r'Details', re.IGNORECASE), href=True)
-    if not details_link:
-        print("No details link found on search page")
+    # Initialize comprehensive property data structure
+    property_data = {
+        # Basic identification
+        'parcel_id': parcelID,
+        'address': f"{streetNumber} {streetName} {streetSuffix}".strip(),
+        'unit_number': unitNumber,
+        
+        # Property characteristics
+        'property_type': None,
+        'classification_code': None,
+        'lot_size': None,
+        'living_area': None,
+        'year_built': None,
+        'bedrooms': None,
+        'bathrooms': None,
+        'parking_spaces': None,
+        'stories': None,
+        
+        # Financial data
+        'fy2025_building_value': None,
+        'fy2025_land_value': None,
+        'fy2025_total_value': None,
+        'previous_year_value': None,
+        
+        # Ownership
+        'owner': None,
+        'owner_address': None,
+        
+        # Additional details
+        'zoning': None,
+        'land_use': None,
+        'building_use': None,
+        'exterior_condition': None,
+    }
     
-    map_link = soup.find('a', string=re.compile(r'Map', re.IGNORECASE), href=True)
-    if not map_link:
-        print("No map link found on search page")
+    # Extract building values
+    building_values = get_building_value(soup)
+    property_data.update({
+        'fy2025_building_value': building_values.get("FY2025 Building value"),
+        'fy2025_land_value': building_values.get("FY2025 Land value"),
+        'fy2025_total_value': building_values.get("FY2025 Total value")
+    })
     
-    # return get_parcel_information(details_link.get('href')), get_building_value(soup)
-    return get_building_value(soup)
+    # Extract detailed property information from tables
+    # Look for property details in various table structures
+    for table in soup.find_all('table'):
+        rows = table.find_all('tr')
+        for row in rows:
+            cells = row.find_all(['td', 'th'])
+            if len(cells) >= 2:
+                label = cells[0].get_text(strip=True).lower()
+                value = cells[1].get_text(strip=True)
+                
+                # Map labels to our property data fields
+                if 'year built' in label or 'built' in label:
+                    property_data['year_built'] = value
+                elif 'lot size' in label:
+                    property_data['lot_size'] = value
+                elif 'living area' in label or 'floor area' in label:
+                    property_data['living_area'] = value
+                elif 'bedrooms' in label or 'bed' in label:
+                    property_data['bedrooms'] = value
+                elif 'bathrooms' in label or 'bath' in label:
+                    property_data['bathrooms'] = value
+                elif 'parking' in label:
+                    property_data['parking_spaces'] = value
+                elif 'stories' in label or 'floors' in label:
+                    property_data['stories'] = value
+                elif 'owner' in label and not property_data['owner']:
+                    property_data['owner'] = value
+                elif 'property type' in label:
+                    property_data['property_type'] = value
+                elif 'classification' in label:
+                    property_data['classification_code'] = value
+                elif 'zoning' in label:
+                    property_data['zoning'] = value
+                elif 'land use' in label:
+                    property_data['land_use'] = value
+                elif 'building use' in label:
+                    property_data['building_use'] = value
+                elif 'condition' in label:
+                    property_data['exterior_condition'] = value
+    
+    # Try to find owner address in owner information section
+    owner_sections = soup.find_all(text=re.compile(r'owner', re.IGNORECASE))
+    for section in owner_sections:
+        parent = section.parent
+        if parent:
+            # Look for address patterns in nearby text
+            for sibling in parent.find_next_siblings():
+                text = sibling.get_text(strip=True)
+                if re.search(r'\d+.*(?:st|ave|rd|blvd|street|avenue|road|boulevard)', text, re.IGNORECASE):
+                    property_data['owner_address'] = text
+                    break
+    
+    return property_data
 
-print(get_parcel_basics("", "263", "N HARVARD", "", ""))
+def get_parcel_basics(parcelID: str, streetNumber: str, streetName: str, streetSuffix: str, unitNumber: str) -> Dict[str, Optional[str]]:
+    # Use the enhanced version instead of the old function
+    return get_enhanced_parcel_data(parcelID, streetNumber, streetName, streetSuffix, unitNumber)
+
+if __name__ == "__main__":
+    print(get_parcel_basics("", "263", "N HARVARD", "", ""))
