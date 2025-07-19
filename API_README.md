@@ -15,7 +15,7 @@ GOOGLE_API_KEY=your_google_api_key
 TAVILY_API_KEY=your_tavily_api_key
 ```
 
-## Running the API
+## To Run the API
 
 Start the FastAPI server:
 ```bash
