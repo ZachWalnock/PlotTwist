@@ -23,18 +23,18 @@ def get_parcel_information(parcelID: str, headers=None) -> Dict[str, Optional[st
         'owner': None
     }
     
-        information_sources = {"Parcel ID": None, "Address": None, "Property Type": None, "Classification Code": None, "Lot Size": None, "Living Area": None, "Owner": None, "Living Area": None, "Owner": None}
-        i = 0
-        for element in module_elements:
-            right_aligned_children = element.find_all(attrs={"align": "right"})
-            
-            for child in right_aligned_children:
-                if i == len(information_sources):
-                    return information_sources
-                topic = list(information_sources.keys())[i]
-                text = child.get_text(strip=True)
-                information_sources[topic] = text
-                i += 1
+    information_sources = {"Parcel ID": None, "Address": None, "Property Type": None, "Classification Code": None, "Lot Size": None, "Living Area": None, "Owner": None, "Living Area": None, "Owner": None}
+    i = 0
+    for element in module_elements:
+        right_aligned_children = element.find_all(attrs={"align": "right"})
+        
+        for child in right_aligned_children:
+            if i == len(information_sources):
+                return information_sources
+            topic = list(information_sources.keys())[i]
+            text = child.get_text(strip=True)
+            information_sources[topic] = text
+            i += 1
     
     return information_sources
 
@@ -47,24 +47,34 @@ def get_building_value(soup):
     
     for tr in soup.find_all('tr'):
         tds = tr.find_all('td')
-        for i, td in enumerate(tds):
-            text = td.get_text(strip=True)
+        for td in tds:
+            text = td.  
             if "FY2025 Building value:" in text:
-                # Look for the next td with align="right" in the same row
-                if i + 1 < len(tds):
-                    next_td = tds[i + 1]
-                    if next_td.get('align') == 'right':
-                        information["FY2025 Building value"] = next_td.get_text(strip=True)
+                # Get the next td or the text after the colon
+                next_td = td.find_next_sibling('td')
+                if next_td:
+                    information["FY2025 Building value"] = next_td.get_text(strip=True)
+                else:
+                    # If no next td, try to extract value after colon
+                    parts = text.split(":")
+                    if len(parts) > 1:
+                        information["FY2025 Building value"] = parts[1].strip()
             elif "FY2025 Land value:" in text:
-                if i + 1 < len(tds):
-                    next_td = tds[i + 1]
-                    if next_td.get('align') == 'right':
-                        information["FY2025 Land value"] = next_td.get_text(strip=True)
+                next_td = td.find_next_sibling('td')
+                if next_td:
+                    information["FY2025 Land value"] = next_td.get_text(strip=True)
+                else:
+                    parts = text.split(":")
+                    if len(parts) > 1:
+                        information["FY2025 Land value"] = parts[1].strip()
             elif "FY2025 Total value:" in text:
-                if i + 1 < len(tds):
-                    next_td = tds[i + 1]
-                    if next_td.get('align') == 'right':
-                        information["FY2025 Total value"] = next_td.get_text(strip=True)
+                next_td = td.find_next_sibling('td')
+                if next_td:
+                    information["FY2025 Total value"] = next_td.get_text(strip=True)
+                else:
+                    parts = text.split(":")
+                    if len(parts) > 1:
+                        information["FY2025 Total value"] = parts[1].strip()
     
     return information
 
