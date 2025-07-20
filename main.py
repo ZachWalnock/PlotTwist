@@ -277,6 +277,130 @@ def get_property_data_by_parcel_id(parcel_id: str) -> Dict[str, Optional[str]]:
     # Use empty strings for street components when we only have parcel ID
     return get_enhanced_parcel_data(parcel_id, "", "", "", "")
 
+def format_property_data_for_llm(property_data: Dict[str, Optional[str]]) -> str:
+    """
+    Format property data in a structured way that's conducive for LLM processing.
+    
+    Args:
+        property_data: Dictionary containing property information
+        
+    Returns:
+        Formatted string with property information organized in clear sections
+    """
+    if not property_data:
+        return "No property data available."
+    
+    # Initialize sections
+    sections = []
+    
+    # Basic Property Information
+    basic_info = []
+    if property_data.get('address'):
+        basic_info.append(f"Address: {property_data['address']}")
+    if property_data.get('unit_number'):
+        basic_info.append(f"Unit: {property_data['unit_number']}")
+    if property_data.get('parcel_id'):
+        basic_info.append(f"Parcel ID: {property_data['parcel_id']}")
+    if property_data.get('property_type'):
+        basic_info.append(f"Property Type: {property_data['property_type']}")
+    if property_data.get('classification_code'):
+        basic_info.append(f"Classification: {property_data['classification_code']}")
+    
+    if basic_info:
+        sections.append("PROPERTY IDENTIFICATION:\n" + "\n".join(basic_info))
+    
+    # Physical Characteristics
+    physical_info = []
+    if property_data.get('lot_size'):
+        physical_info.append(f"Lot Size: {property_data['lot_size']}")
+    if property_data.get('living_area'):
+        physical_info.append(f"Living Area: {property_data['living_area']}")
+    if property_data.get('year_built'):
+        physical_info.append(f"Year Built: {property_data['year_built']}")
+    if property_data.get('stories'):
+        physical_info.append(f"Stories: {property_data['stories']}")
+    if property_data.get('building_style'):
+        physical_info.append(f"Style: {property_data['building_style']}")
+    
+    if physical_info:
+        sections.append("PHYSICAL CHARACTERISTICS:\n" + "\n".join(physical_info))
+    
+    # Interior Details
+    interior_info = []
+    if property_data.get('bedrooms'):
+        interior_info.append(f"Bedrooms: {property_data['bedrooms']}")
+    if property_data.get('bathrooms'):
+        interior_info.append(f"Bathrooms: {property_data['bathrooms']}")
+    if property_data.get('total_rooms'):
+        interior_info.append(f"Total Rooms: {property_data['total_rooms']}")
+    if property_data.get('number_of_kitchens'):
+        interior_info.append(f"Kitchens: {property_data['number_of_kitchens']}")
+    if property_data.get('parking_spaces'):
+        interior_info.append(f"Parking Spaces: {property_data['parking_spaces']}")
+    
+    if interior_info:
+        sections.append("INTERIOR DETAILS:\n" + "\n".join(interior_info))
+    
+    # Condition and Features
+    condition_info = []
+    if property_data.get('interior_condition'):
+        condition_info.append(f"Interior Condition: {property_data['interior_condition']}")
+    if property_data.get('exterior_condition'):
+        condition_info.append(f"Exterior Condition: {property_data['exterior_condition']}")
+    if property_data.get('exterior_finish'):
+        condition_info.append(f"Exterior Finish: {property_data['exterior_finish']}")
+    if property_data.get('foundation'):
+        condition_info.append(f"Foundation: {property_data['foundation']}")
+    if property_data.get('heat_type'):
+        condition_info.append(f"Heating: {property_data['heat_type']}")
+    if property_data.get('ac_type'):
+        condition_info.append(f"Air Conditioning: {property_data['ac_type']}")
+    
+    if condition_info:
+        sections.append("CONDITION AND FEATURES:\n" + "\n".join(condition_info))
+    
+    # Financial Information
+    financial_info = []
+    if property_data.get('fy2025_building_value'):
+        financial_info.append(f"Building Value: {property_data['fy2025_building_value']}")
+    if property_data.get('fy2025_land_value'):
+        financial_info.append(f"Land Value: {property_data['fy2025_land_value']}")
+    if property_data.get('fy2025_total_value'):
+        financial_info.append(f"Total Assessed Value: {property_data['fy2025_total_value']}")
+    if property_data.get('previous_year_value'):
+        financial_info.append(f"Previous Year Value: {property_data['previous_year_value']}")
+    
+    if financial_info:
+        sections.append("FINANCIAL INFORMATION:\n" + "\n".join(financial_info))
+    
+    # Ownership Information
+    ownership_info = []
+    if property_data.get('owner'):
+        ownership_info.append(f"Owner: {property_data['owner']}")
+    if property_data.get('owner_address'):
+        ownership_info.append(f"Owner Address: {property_data['owner_address']}")
+    
+    if ownership_info:
+        sections.append("OWNERSHIP INFORMATION:\n" + "\n".join(ownership_info))
+    
+    # Zoning and Land Use
+    zoning_info = []
+    if property_data.get('zoning'):
+        zoning_info.append(f"Zoning: {property_data['zoning']}")
+    if property_data.get('land_use'):
+        zoning_info.append(f"Land Use: {property_data['land_use']}")
+    if property_data.get('building_use'):
+        zoning_info.append(f"Building Use: {property_data['building_use']}")
+    
+    if zoning_info:
+        sections.append("ZONING AND LAND USE:\n" + "\n".join(zoning_info))
+    
+    # Combine all sections with clear separators
+    formatted_output = "\n\n".join(sections)
+    
+    return formatted_output
+
+
 if __name__ == "__main__":
     # Test with a few different properties
     test_address = "263 N Harvard St"
@@ -287,3 +411,45 @@ if __name__ == "__main__":
     
     print(f"\nResults for {test_address}:")
     print(json.dumps(result, indent=2))
+    
+    # Test the LLM formatting function with example data
+    print("\n" + "="*50)
+    print("TESTING LLM FORMATTING FUNCTION")
+    print("="*50)
+    
+    # Example property data (the one provided by user)
+    example_data = {
+        'parcel_id': '2201486000',
+        'address': '263 N Harvard St',
+        'unit_number': '',
+        'property_type': 'Two Family',
+        'classification_code': '0104 (Residential Property  / TWO-FAM DWELLING)',
+        'lot_size': '11,525 sq ft',
+        'living_area': '3,539 sq ft',
+        'year_built': '1890',
+        'bedrooms': '6',
+        'bathrooms': '3',
+        'parking_spaces': '7',
+        'stories': '2.0',
+        'fy2025_building_value': '$923,500.00',
+        'fy2025_land_value': '$684,200.00',
+        'fy2025_total_value': '$1,607,700.00',
+        'previous_year_value': None,
+        'owner': 'THE HELPING HAND TRUST',
+        'owner_address': '316 NORTH HARVARD ST C/O JAMES GEORGES ALLSTON MA 02134',
+        'zoning': None,
+        'land_use': '104 - TWO-FAM DWELLING',
+        'building_use': None,
+        'exterior_condition': 'Average',
+        'building_style': 'Conventional',
+        'total_rooms': '11',
+        'number_of_kitchens': '2',
+        'ac_type': 'None',
+        'heat_type': 'Ht Water/Steam',
+        'interior_condition': 'Average',
+        'exterior_finish': 'Wood Shake',
+        'foundation': 'Stone'
+    }
+    
+    formatted_output = format_property_data_for_llm(example_data)
+    print(formatted_output)

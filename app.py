@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from llm import ask_real_estate_agent
 import uvicorn
@@ -25,15 +26,6 @@ async def read_root():
 
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
-    """
-    Analyze a property for real estate development opportunities.
-    
-    Args:
-        request: PropertyRequest containing property information
-        
-    Returns:
-        PropertyResponse containing the analysis
-    """
     try:
         analysis = ask_real_estate_agent(request.property_info)
         return PropertyResponse(analysis=analysis)
