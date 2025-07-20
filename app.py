@@ -5,7 +5,7 @@ from typing import Optional
 import uvicorn
 import os
 from main import get_enhanced_parcel_data, format_property_data_for_llm
-from llm import get_similar_developments, get_estate_report
+from llm import get_similar_developments, get_estate_development_opportunities, get_estate_report
 from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT
 
 app = FastAPI(title="PlotTwist API - Backend", 
@@ -31,7 +31,7 @@ class PropertyResponse(BaseModel):
     recent_developments: str
     evidence: str
     data_sources: dict[str, Optional[str]]
-
+    development_opportunities: str
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
     enhanced_parcel_data = get_enhanced_parcel_data("", request.street_number, request.street_name, request.street_suffix, request.unit_number)
@@ -40,14 +40,18 @@ async def create_report(request: PropertyRequest):
     recent_developments = get_similar_developments(formatted_property_info)
     print("="*100)
     print(recent_developments)
-    report = get_estate_report(formatted_property_info, recent_developments["content"])
+    development_opportunities = get_estate_development_opportunities(formatted_property_info, recent_developments["content"])
+    print("="*100)
+    print(development_opportunities)
+    report = get_estate_report(formatted_property_info, development_opportunities)
     print("="*100)
     print(report)
     return PropertyResponse(
         final_report=report,
         recent_developments=recent_developments["content"],
         evidence="\n".join(recent_developments["evidence"]),
-        data_sources=enhanced_parcel_data
+        data_sources=enhanced_parcel_data,
+        development_opportunities=development_opportunities
     )
 
 @app.get("/health")

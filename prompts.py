@@ -1,4 +1,4 @@
-DEVELOPMENT_OPP_EXAMPLE = """<Report> <Analysis> [ANALYSIS]
+DEVELOPMENT_OPP_EXAMPLE = """
 1  Property snapshot
 
 Address: 333 Tremont St, Boston, MA 02116 – a free‑standing, cylindrical structure in the Theater District, steps from Boston Common.
@@ -36,7 +36,6 @@ Weaknesses – non‑rectilinear geometry complicates layouts; limited on‑site
 Opportunities – zoning incentives for cultural uses; growing demand for experiential retail and boutique hospitality; city encouragement of office→residential or life‑science conversions.
 Threats – high construction costs, stringent shadow / wind studies, competition from newer Seaport assets, lingering office softness.
 
-</ANALYSIS> <OPPORTUNITIES> [OPPORTUNITIES]
 Adaptive‑reuse boutique hotel + ground‑floor food & beverage
 Why: Cylindrical form fits compact guest‑room ring layout; stage volume converts to speakeasy‑style performance venue; Theater District synergy boosts midweek occupancy.
 
@@ -50,8 +49,7 @@ Life‑science TAMI (tech/advertising/media/information) conversion
 Why: 20‑ft clear height and elevator core support lab/collaboration floors; modest size suits seed‑stage biotechs priced out of Seaport/Kendal; proximity to Tufts Medical & Mass General talent pool. Requires HVAC/MEP overhaul and hazardous‑use permitting.
 
 Next steps: order ALTA survey & Phase I ESA, confirm Article 80 thresholds, and model financials under each scenario.
-
-</OPPORTUNITIES> </Report>"""
+"""
 
 DEVELOPMENT_OPPORTUNITIES_PROMPT = f"""
 You are a real estate agent. You are given a property and information about that property, including parcel information, surrounding properties, and building value. Your job is to determine if any potential development opportunities are feasible for this property, and if so, what they are.
@@ -75,17 +73,7 @@ Here's the property information:
 [PROPERTY_INFO]
 </PROPERTY_INFO>
 
-Create a report detailing the feasibility of the devleopment opportunities on this property, and who to contact to potentially buy the property. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer.\
-IMPORTANT: Withhold all predictions or suggestions about potential developments until the very end of the report. Include a section separated from the rest of the report wrapped in <PREDICTIONS> tags that details your predictions about the property. For example, here is how your output should be organized:
-
-<Report>
-<Analysis>
-[ANALYSIS]
-</ANALYSIS>
-<OPPORTUNITIES>
-[OPPORTUNITIES]
-</OPPORTUNITIES>
-</Report>
+You are creating one section of a larger report. Detail any possible development opportunities for this property.
 """
 
 GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find developments nearby that could be used as a reference for the development. 
@@ -101,4 +89,15 @@ Here is some information about the property in Boston.
 Next to each of the developments, list the source you used to find the development.
 
 Using the search tool, find similar developments nearby. Return only the report, and do not use the first person. Only list the developments, do not refer to your tools or thinking. 
+"""
+
+SUMMARIZATION_PROMPT = """Summarize the following information into a concise report.
+
+<PROPERTY_INFO>
+[PROPERTY_INFO]
+</PROPERTY_INFO>
+
+<RECENT_DEVELOPMENTS>
+[RECENT_DEVELOPMENTS]
+</RECENT_DEVELOPMENTS>
 """

@@ -3,7 +3,7 @@ from google.genai import types
 from dotenv import load_dotenv
 import os
 import json
-from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT, GET_SIMILAR_DEVELOPMENT_PROMPT
+from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT, GET_SIMILAR_DEVELOPMENT_PROMPT, SUMMARIZATION_PROMPT
 from main import get_enhanced_parcel_data, format_property_data_for_llm
 from tavily import TavilyClient
 load_dotenv()
@@ -68,28 +68,36 @@ def get_similar_developments(formatted_property_info) -> str:
     user_prompt = GET_SIMILAR_DEVELOPMENT_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info)
     return ask_real_estate_agent(user_prompt)
 
-def get_estate_report(formatted_property_info: str, recent_developments_report: str) -> str:
+def get_estate_development_opportunities(formatted_property_info: str, recent_developments_report: str) -> str:
     user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments_report)
     chat_history = [{"role": "user", "content": user_prompt}]
     response = ask_llm(chat_history, use_tools=False)
     return response.candidates[-1].content.parts[-1].text
 
+def get_estate_report(formatted_property_info: str, recent_developments_report: str) -> str:
+    user_prompt = SUMMARIZATION_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments_report)
+    chat_history = [{"role": "user", "content": user_prompt}]
+    response = ask_llm(chat_history, use_tools=False)
+    return response.candidates[-1].content.parts[-1].text
+
+
 if __name__ == "__main__":
-    formatted_property_info = format_property_data_for_llm(get_enhanced_parcel_data("", "263", "N Harvard", "St", ""))
-    recent_developments = get_similar_developments(formatted_property_info)
-    with open("recent_developments.md", "w", encoding="utf-8") as f:
-        f.write(recent_developments["content"])
+    # formatted_property_info = format_property_data_for_llm(get_enhanced_parcel_data("", "263", "N Harvard", "St", ""))
+    # recent_developments = get_similar_developments(formatted_property_info)
+    # with open("recent_developments.md", "w", encoding="utf-8") as f:
+    #     f.write(recent_developments["content"])
     
-    user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments["content"])
-    report = get_estate_report(formatted_property_info, recent_developments["content"])
-    print(report)
-    report = report.candidates[-1].content.parts[-1].text
-    with open("report.md", "w", encoding="utf-8") as f:
-        f.write(report)
-    with open("evidence.md", "w", encoding="utf-8") as f:
-        f.write("\n".join(recent_developments["evidence"]))
+    # user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments["content"])
+    # report = get_estate_development_opportunities(formatted_property_info, recent_developments["content"])
+    # print(report)
+    # report = report.candidates[-1].content.parts[-1].text
+    # with open("report.md", "w", encoding="utf-8") as f:
+    #     f.write(report)
+    # with open("evidence.md", "w", encoding="utf-8") as f:
+    #     f.write("\n".join(recent_developments["evidence"]))
     
-    print(report)
+    # print(report)
+    print(get_estate_report("Test", "Test"))
 
     # response = ask_real_estate_agent(property_info)
     # print("="*100)
