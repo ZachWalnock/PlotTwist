@@ -40,14 +40,10 @@ env/
 .git
 .gitignore
 
-# Documentation
+# Documentation  
 README.md
-current_capabilities.md
 data_sources.md
 API_README.md
-
-# Sample files
-sample_property_analysis.json
 
 # OS
 .DS_Store

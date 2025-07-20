@@ -1,6 +1,4 @@
 from fastapi import FastAPI, HTTPException
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
@@ -14,24 +12,25 @@ except ImportError as e:
     print(f"LLM import failed: {e}")
     LLM_AVAILABLE = False
     def ask_real_estate_agent(property_info):
-        return f"PlotTwist Demo Analysis for: {property_info}\n\nThis is a demo version. Full AI analysis requires API keys.\n\nProperty: {property_info}\nStatus: Demo mode - showing placeholder analysis.\n\nTo enable full analysis, set GOOGLE_API_KEY environment variable."
+        return f"PlotTwist API Analysis for: {property_info}\n\nThis is the backend API. Full AI analysis requires API keys.\n\nProperty: {property_info}\nStatus: API mode - placeholder analysis.\n\nTo enable full analysis, set GOOGLE_API_KEY environment variable."
 
-app = FastAPI(title="PlotTwist - Real Estate Development Analyzer", 
-              description="AI-powered API for real estate development opportunity analysis")
+app = FastAPI(title="PlotTwist API - Backend", 
+              description="Backend API for real estate development opportunity analysis")
 
-# Mount static files directory
-app.mount("/static", StaticFiles(directory="static"), name="static")
+# Add CORS middleware for Next.js frontend
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Configure this with your Next.js domain in production
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 class PropertyRequest(BaseModel):
     property_info: str
 
 class PropertyResponse(BaseModel):
     analysis: str
-
-@app.get("/")
-async def read_root():
-    """Serve the demo HTML page"""
-    return FileResponse('static/index.html')
 
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
@@ -77,12 +76,12 @@ async def health_check():
 
 @app.get("/info")
 async def app_info():
-    """Application information for hackathon demo"""
+    """API information and capabilities"""
     return {
-        "name": "PlotTwist",
-        "description": "AI-powered real estate development opportunity analyzer",
+        "name": "PlotTwist API",
+        "description": "Backend API for real estate development opportunity analysis",
         "version": "1.0.0",
-        "demo_mode": not LLM_AVAILABLE,
+        "llm_available": LLM_AVAILABLE,
         "features": [
             "Property data extraction from Boston Assessment records",
             "Zoning analysis and development potential assessment",
@@ -91,9 +90,9 @@ async def app_info():
             "Development feasibility scoring"
         ],
         "endpoints": {
-            "demo": "/",
             "analyze": "/create-report",
-            "health": "/health"
+            "health": "/health",
+            "info": "/info"
         }
     }
 

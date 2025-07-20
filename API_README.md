@@ -62,9 +62,11 @@ Health check endpoint.
 python app.py
 ```
 
-2. In another terminal, run the test script:
+2. Test with curl:
 ```bash
-python test_api.py
+curl -X POST "http://localhost:8000/create-report" \
+  -H "Content-Type: application/json" \
+  -d '{"property_info": "263 N Harvard St, Boston, MA"}'
 ```
 
 ## API Documentation

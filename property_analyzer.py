@@ -772,8 +772,4 @@ if __name__ == "__main__":
         if i == 0:  # Only full report for first address
             report = format_analysis_for_llm(analysis)
             print("\nFull Report:")
-            print(report)
-            
-            # Save detailed analysis
-            with open('sample_property_analysis.json', 'w') as f:
-                json.dump(analysis, f, indent=2) 
+            print(report) 
