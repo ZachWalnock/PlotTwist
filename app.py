@@ -1,6 +1,7 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.staticfiles import StaticFiles
 from fastapi.responses import FileResponse
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import uvicorn
 import os
@@ -21,6 +22,15 @@ app = FastAPI(title="PlotTwist - Real Estate Development Analyzer",
 # Mount static files directory
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
+# Add CORS middleware
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:3000"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 class PropertyRequest(BaseModel):
     property_info: str
 
@@ -34,15 +44,6 @@ async def read_root():
 
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
-    """
-    Analyze a property for real estate development opportunities.
-    
-    Args:
-        request: PropertyRequest containing property information
-        
-    Returns:
-        PropertyResponse containing the analysis
-    """
     try:
         analysis = ask_real_estate_agent(request.property_info)
         return PropertyResponse(analysis=analysis)
