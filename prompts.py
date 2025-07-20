@@ -71,7 +71,7 @@ By integrating life‑science employment engines with urgently needed affordable
 This memorandum is illustrative and draws on publicly available BPDA procurement documents; prospective proponents must perform independent due diligence and financial verification."""
 
 DEVELOPMENT_OPPORTUNITIES_PROMPT = f"""
-You are a real estate agent. You are given a property and information about that property, including parcel information, surrounding properties, and building value. You are to determine if the property is a development opportunity.
+You are a real estate agent. You are given a property and information about that property, including parcel information, surrounding properties, and building value. Your job is to determine if any potential development opportunities are feasible for this property, and if so, what they are.
 
 A development opportunity is something that could potentially be developed to increase the revenue of the property.
 
@@ -80,12 +80,32 @@ Here's an example of a development opportunity:
 {DEVELOPMENT_OPP_EXAMPLE}
 </DEVELOPMENT_OPP_EXAMPLE>
 
-Ask questions like "What are recent news articles about this property?" or "What developments are happenign in the surrounding area?". Use your tools to find information.
+Here is a report about some recent developments in the area:
+<RECENT_DEVELOPMENTS>
+[RECENT_DEVELOPMENTS]
+</RECENT_DEVELOPMENTS>
+
+Consider questions like "How is this property currently being under utilized" and "What could we do to better take advantage of the property?".
 
 Here's the property information:
 <PROPERTY_INFO>
 [PROPERTY_INFO]
 </PROPERTY_INFO>
 
-In your report, please include things like similar recent developments in the area, 
+Create a report detailing the feasibility of the devleopment opportunities on this property, and who to contact to potentially buy the property. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer.
+"""
+
+GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find  developments nearby that could be used as a reference for the development. 
+The end goal for the real estate firm is to determine the financial feasibility of developing the property. In order to do this, you should find similar devlopments nearby and analyze the financials of those developments (if possible), in order to create a good understanding of the financials of the property we're analyzing.
+List out the recent developments in the area with as much detail as possible.
+
+Here is some information about the property in Boston.
+
+<PROPERTY_INFO>
+[PROPERTY_INFO]
+</PROPERTY_INFO>
+
+Next to each of the developments, list the source you used to find the development.
+
+Using the search tool, find similar developments nearby. Return only the report, and do not use the first person. Only list the developments, do not refer to your tools or thinking. 
 """
