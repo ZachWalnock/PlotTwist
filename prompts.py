@@ -23,7 +23,7 @@ Housing Pressure – Roxbury median rents have risen 31 % since 2020; deep�
 Civic Identity – The neighbourhood lacks a dedicated museum or large performance venue celebrating Roxbury’s cultural legacy; the RFP explicitly rewards proposals delivering such assets.
 City of Boston Planning Department
 
-4 │ Illustrative Development Program
+ │ Illustrative Development Program
 Component	GSF	Description
 Life‑science R&D (2 towers)	550,000 gsf	8–12 story mass‑timber over podium; 32 k sf floorplates
 Workforce training center	40,000 gsf	Biotech skills academy operated by Roxbury CC
@@ -97,7 +97,7 @@ Create a report detailing the feasibility of the devleopment opportunities on th
 
 GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find  developments nearby that could be used as a reference for the development. 
 The end goal for the real estate firm is to determine the financial feasibility of developing the property. In order to do this, you should find similar devlopments nearby and analyze the financials of those developments (if possible), in order to create a good understanding of the financials of the property we're analyzing.
-List out the recent developments in the area with as much detail as possible.
+Do extensive research, and discover as much about the surrounding area and the new properties as possible.List out the recent developments in the area with as much detail as possible.
 
 Here is some information about the property in Boston.
 

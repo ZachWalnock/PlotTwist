@@ -1,18 +1,12 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
+from typing import Optional
 import uvicorn
 import os
-
-# Try to import LLM function with fallback
-try:
-    from llm import ask_real_estate_agent
-    LLM_AVAILABLE = True
-except ImportError as e:
-    print(f"LLM import failed: {e}")
-    LLM_AVAILABLE = False
-    def ask_real_estate_agent(property_info):
-        return f"PlotTwist API Analysis for: {property_info}\n\nThis is the backend API. Full AI analysis requires API keys.\n\nProperty: {property_info}\nStatus: API mode - placeholder analysis.\n\nTo enable full analysis, set GOOGLE_API_KEY environment variable."
+from main import get_enhanced_parcel_data, format_property_data_for_llm
+from llm import get_similar_developments, get_estate_report
+from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT
 
 app = FastAPI(title="PlotTwist API - Backend", 
               description="Backend API for real estate development opportunity analysis")
@@ -27,42 +21,33 @@ app.add_middleware(
 )
 
 class PropertyRequest(BaseModel):
-    property_info: str
+    street_number: str
+    street_name: str
+    street_suffix: str
+    unit_number: str
 
 class PropertyResponse(BaseModel):
-    analysis: str
+    final_report: str
+    recent_developments: str
+    evidence: str
+    data_sources: dict[str, Optional[str]]
 
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
-    try:
-        analysis = ask_real_estate_agent(request.property_info)
-        return PropertyResponse(analysis=analysis)
-    except Exception as e:
-        # Return a demo response instead of failing
-        demo_analysis = f"""
-# PlotTwist Analysis - Demo Mode
-
-## Property: {request.property_info}
-
-### Status: Demo Version
-This is a demonstration of the PlotTwist system. The full AI-powered analysis requires API keys.
-
-### What PlotTwist Can Do:
-- ✅ Real property data extraction from Boston Assessment records  
-- ✅ Zoning analysis and development potential assessment
-- ✅ Market intelligence and neighborhood analysis
-- ✅ AI-powered strategic recommendations using Google Gemini
-- ✅ Development feasibility scoring and FAR calculations
-
-### Sample Output:
-**Property Type:** Residential
-**Development Potential:** Medium-High  
-**Estimated Value:** Contact for full analysis
-**Strategic Recommendation:** Full analysis available with API setup
-
-**Error Details (for debugging):** {str(e)}
-        """
-        return PropertyResponse(analysis=demo_analysis.strip())
+    enhanced_parcel_data = get_enhanced_parcel_data("", request.street_number, request.street_name, request.street_suffix, request.unit_number)
+    formatted_property_info = format_property_data_for_llm(enhanced_parcel_data)
+    recent_developments = get_similar_developments(formatted_property_info)
+    print("="*100)
+    print(recent_developments)
+    report = get_estate_report(formatted_property_info, recent_developments["content"])
+    print("="*100)
+    print(report)
+    return PropertyResponse(
+        final_report=report,
+        recent_developments=recent_developments["content"],
+        evidence="\n".join(recent_developments["evidence"]),
+        data_sources=enhanced_parcel_data
+    )
 
 @app.get("/health")
 async def health_check():
@@ -70,30 +55,6 @@ async def health_check():
     return {
         "status": "healthy", 
         "service": "PlotTwist Real Estate Analyzer",
-        "llm_available": LLM_AVAILABLE,
-        "demo_mode": not LLM_AVAILABLE
-    }
-
-@app.get("/info")
-async def app_info():
-    """API information and capabilities"""
-    return {
-        "name": "PlotTwist API",
-        "description": "Backend API for real estate development opportunity analysis",
-        "version": "1.0.0",
-        "llm_available": LLM_AVAILABLE,
-        "features": [
-            "Property data extraction from Boston Assessment records",
-            "Zoning analysis and development potential assessment",
-            "Market intelligence and neighborhood analysis", 
-            "AI-powered strategic recommendations",
-            "Development feasibility scoring"
-        ],
-        "endpoints": {
-            "analyze": "/create-report",
-            "health": "/health",
-            "info": "/info"
-        }
     }
 
 if __name__ == "__main__":

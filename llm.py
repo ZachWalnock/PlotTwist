@@ -43,7 +43,7 @@ def ask_llm(chat_history: list[dict[str, str]], use_tools: bool = True) -> str:
 def ask_real_estate_agent(prompt: str, MAX_TOOL_CALLS: int = 10) -> str:
     print("Real estate report in action...")
     chat_history = [
-        {"role": "user", "content": "You are an expert real estate developer assistant. Do nor "},
+        {"role": "user", "content": "You are an expert real estate developer assistant. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer."},
         {"role": "user", "content": prompt}
     ]
     response = ask_llm(chat_history)
@@ -70,7 +70,9 @@ def get_similar_developments(formatted_property_info) -> str:
 
 def get_estate_report(formatted_property_info: str, recent_developments_report: str) -> str:
     user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments_report)
-    return ask_llm(user_prompt, use_tools=False)
+    chat_history = [{"role": "user", "content": user_prompt}]
+    response = ask_llm(chat_history, use_tools=False)
+    return response.candidates[-1].content.parts[-1].text
 
 if __name__ == "__main__":
     formatted_property_info = format_property_data_for_llm(get_enhanced_parcel_data("", "263", "N Harvard", "St", ""))
@@ -79,7 +81,7 @@ if __name__ == "__main__":
         f.write(recent_developments["content"])
     
     user_prompt = DEVELOPMENT_OPPORTUNITIES_PROMPT.replace("[PROPERTY_INFO]", formatted_property_info).replace("[RECENT_DEVELOPMENTS]", recent_developments["content"])
-    report = ask_llm([{"role": "user", "content": user_prompt}], use_tools=False)
+    report = get_estate_report(formatted_property_info, recent_developments["content"])
     print(report)
     report = report.candidates[-1].content.parts[-1].text
     with open("report.md", "w", encoding="utf-8") as f:
