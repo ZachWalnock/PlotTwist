@@ -32,6 +32,7 @@ class PropertyResponse(BaseModel):
     evidence: str
     data_sources: dict[str, Optional[str]]
     development_opportunities: str
+    
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
     enhanced_parcel_data = get_enhanced_parcel_data("", request.street_number, request.street_name, request.street_suffix, request.unit_number)

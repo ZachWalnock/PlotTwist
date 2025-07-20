@@ -73,7 +73,7 @@ Here's the property information:
 [PROPERTY_INFO]
 </PROPERTY_INFO>
 
-You are creating one section of a larger report. Detail any possible development opportunities for this property.
+You are creating one section of a larger report. Detail any possible development opportunities for this property. Format your response as a professional report section, not as an email or letter.
 """
 
 GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find developments nearby that could be used as a reference for the development. 

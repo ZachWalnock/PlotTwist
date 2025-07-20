@@ -43,7 +43,7 @@ def ask_llm(chat_history: list[dict[str, str]], use_tools: bool = True) -> str:
 def ask_real_estate_agent(prompt: str, MAX_TOOL_CALLS: int = 10) -> str:
     print("Real estate report in action...")
     chat_history = [
-        {"role": "user", "content": "You are an expert real estate developer assistant. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer."},
+        {"role": "user", "content": "You are an expert real estate developer assistant. Do not use the first person, and provide a professional report format."},
         {"role": "user", "content": prompt}
     ]
     response = ask_llm(chat_history)
