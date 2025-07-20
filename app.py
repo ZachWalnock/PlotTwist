@@ -14,7 +14,7 @@ app = FastAPI(title="PlotTwist API - Backend",
 # Add CORS middleware for Next.js frontend
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Configure this with your Next.js domain in production
+    allow_origins=["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -35,6 +35,7 @@ class PropertyResponse(BaseModel):
 @app.post("/create-report", response_model=PropertyResponse)
 async def create_report(request: PropertyRequest):
     enhanced_parcel_data = get_enhanced_parcel_data("", request.street_number, request.street_name, request.street_suffix, request.unit_number)
+    print(enhanced_parcel_data)
     formatted_property_info = format_property_data_for_llm(enhanced_parcel_data)
     recent_developments = get_similar_developments(formatted_property_info)
     print("="*100)

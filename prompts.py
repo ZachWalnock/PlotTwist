@@ -1,74 +1,57 @@
-DEVELOPMENT_OPP_EXAMPLE = """1 │ Executive Summary
-Parcel P‑3 is a ~7.6‑acre (≈330,939 sf) BPDA‑controlled site fronting Tremont Street opposite Ruggles Station in Roxbury’s rapidly revitalising Nubian Square district. The City is seeking a long‑term ground‑lease partner to transform this long‑vacant land into a catalytic mixed‑use campus that advances affordable housing, life‑science employment, and community‑serving cultural space.
-City of Boston Planning Department
-City of Boston Planning Department
+DEVELOPMENT_OPP_EXAMPLE = """<Report> <Analysis> [ANALYSIS]
+1  Property snapshot
 
-Attribute	Detail
-Address	South side of Tremont St. at Ruggles St., Roxbury
-Ownership	Boston Planning & Development Agency (BPDA)
-Land area	330,939 sf (±7.6 acres)
-Zoning/Plans	Campus High Urban Renewal Area; must align with PLAN: Nubian Square and Roxbury Strategic Master Plan
-Disposition	99‑year ground lease via BPDA RFP
-Transit	Adjacent to MBTA Orange Line & commuter rail (Ruggles), multiple bus routes
+Address: 333 Tremont St, Boston, MA 02116 – a free‑standing, cylindrical structure in the Theater District, steps from Boston Common.
 
-2 │ Planning & Zoning Context
-The site sits in a Transit‑Oriented core with no height cap under Article 80 large‑project review; FAR of 6.0–8.0 is supportable given precedent life‑science approvals along Tremont St. A minimum 20 % on‑site affordable housing ratio and Article 37 Net‑Zero‑Carbon compliance are mandatory. Public feedback prioritises ground‑floor cultural uses and robust open‑space links to Melnea Cass Blvd greenways.
-City of Boston Planning Department
+Existing improvements: ±14 000 SF GBA over three above‑grade floors plus basement (≈4 000 SF | 2 000 SF | 4 000 SF by floor), 20‑ft stage volume, elevator, commercial kitchens and ±8 surface parking spaces. Built 1972 and presently marketed only for short‑term tenancy, so occupancy is low. 
+J Barrett Realty
+Zillow
 
-3 │ Market Rationale
-Life Science Expansion – Boston’s lab vacancy rests below 3 % in core clusters; Nubian Square offers lower land basis yet the same 15‑minute transit access to Kendall Sq. and the Seaport, positioning P‑3 to capture spill‑over R&D demand.
+2  Location & access
 
-Housing Pressure – Roxbury median rents have risen 31 % since 2020; deep‑income‑tier housing is undersupplied.
+200 ft to Boylston MBTA Green Line entrance and ~0.2 mi to the Orange Line at Chinatown; Boylston averaged ~5 265 weekday boardings (FY 2019) and patronage is rebounding post‑COVID. 
+Wikipedia
 
-Civic Identity – The neighbourhood lacks a dedicated museum or large performance venue celebrating Roxbury’s cultural legacy; the RFP explicitly rewards proposals delivering such assets.
-City of Boston Planning Department
+Walk Score 99; the Tremont/Boylston corner captures heavy tourist, commuter, and theater traffic.
 
- │ Illustrative Development Program
-Component	GSF	Description
-Life‑science R&D (2 towers)	550,000 gsf	8–12 story mass‑timber over podium; 32 k sf floorplates
-Workforce training center	40,000 gsf	Biotech skills academy operated by Roxbury CC
-Mixed‑income housing	420,000 gsf (≈400 units)	60 % market‑rate, 20 % 60‑80 AMI, 20 % ≤50 AMI
-Cultural/museum space	60,000 gsf	“Boston Civil Rights & Policy Center” with 500‑seat auditorium
-Retail + food hall	35,000 gsf	Local‑operator preference, 25 % micro‑retail (<500 sf)
-Structured parking	350 sp	Below‑grade, EV‑ready, 1:5,000 gsf lab ratio
-Public open space	1.8 ac	Central green + Tremont St plaza; climate‑resilient landscaping
+3  Regulatory context (high‑level)
 
-5 │ Financial Snapshot (order‑of‑magnitude)
-Total development cost: $1.05 B
+Falls in the Midtown Cultural / Theater District (Article 38) overlay. Base FAR ≈ 8.0 with bonuses for cultural, affordable‑housing, or sustainability contributions; height limits up to ~155 ft subject to design review and shadow protections on Boston Common.
 
-Hard costs $715 M (lab $1,000 /sf; res $475 /sf)
+Not individually landmarked, but adjacency to historic resources triggers Boston Landmarks and Mass. Historic Commission consultation for exterior changes.
+Confirm zoning and overlay data with BPDA before design.
 
-Soft costs $210 M (20 %)
+4  Market indicators (Q2 2025 unless noted)
 
-Contingency $52 M (5 %)
+Sector	Vacancy / Availability	Trend & note	Source
+Downtown office	18.8 % vacancy / 23.3 % availability	Soft demand but flight‑to‑quality; conversions gaining traction	
+CBRE
+Greater Boston multifamily	5.8 % vacancy (Q1 2025)	Tight supply supports rent growth	
+Colliers
+Tourism / hotels	Occupancy back to ~80 % city‑wide (industry reports); ADR above 2019	industry data	
 
-Land (ground‑lease PV) $75 M
+5  SWOT (site‑specific)
+Strengths – irreplaceable core location; transit‑rich; unique cylindrical “icon” lends branding value; sizeable floorplates for adaptive reuse.
+Weaknesses – non‑rectilinear geometry complicates layouts; limited on‑site parking; 1970s systems likely obsolete.
+Opportunities – zoning incentives for cultural uses; growing demand for experiential retail and boutique hospitality; city encouragement of office→residential or life‑science conversions.
+Threats – high construction costs, stringent shadow / wind studies, competition from newer Seaport assets, lingering office softness.
 
-Capital stack: 60 % senior debt, 25 % equity, 10 % mezzanine, 5 % NMTC/HTC.
+</ANALYSIS> <OPPORTUNITIES> [OPPORTUNITIES]
+Adaptive‑reuse boutique hotel + ground‑floor food & beverage
+Why: Cylindrical form fits compact guest‑room ring layout; stage volume converts to speakeasy‑style performance venue; Theater District synergy boosts midweek occupancy.
 
-Stabilised NOI: $63 M (lab $52 M, residential $9 M, retail $2 M).
+Vertical addition (2–4 floors) to create 40–60 micro‑loft apartments
+Why: FAR headroom and cultural/affordable bonuses can justify extra density; strong multifamily fundamentals and limited new supply downtown.
 
-Levered IRR (10‑yr exit): 16 %.
+Hybrid “arts‑tech hub”
+Why: Retain lower level performance space, insert two floors of creative co‑working / podcast studios, top floor event terrace. Aligns with city goals for activating cultural districts and leverages demand for flexible, character‑rich office alternatives.
 
-Public benefits value: ≈$170 M (land rent, affordable units, cultural fit‑out, workforce program).
+Life‑science TAMI (tech/advertising/media/information) conversion
+Why: 20‑ft clear height and elevator core support lab/collaboration floors; modest size suits seed‑stage biotechs priced out of Seaport/Kendal; proximity to Tufts Medical & Mass General talent pool. Requires HVAC/MEP overhaul and hazardous‑use permitting.
 
-6 │ Key Approvals & Milestones
-BPDA Designation – Q4 2025 selection following RFP presentations.
+Next steps: order ALTA survey & Phase I ESA, confirm Article 80 thresholds, and model financials under each scenario.
 
-Article 80 Large‑Project Review – Scoping & DEIR by Q2 2026; BCDC design approvals concurrent.
-
-Zoning & Urban Renewal Modification – Campus High URA amendment to permit lab use; targeted Q4 2026.
-
-Financing & Ground‑Lease Execution – Q2 2027.
-
-Phase 1 Commencement (Housing + Cultural Core) – Q3 2027; 30‑month schedule.
-
-Full Build‑Out – Final Phase (Lab Tower 2) completes 2032.
-
-7 │ Investment Thesis
-By integrating life‑science employment engines with urgently needed affordable housing and signature cultural space, Parcel P‑3 can anchor Nubian Square’s evolution into a resilient, inclusive innovation district. Transit adjacency, City sponsorship, and a community‑backed planning framework materially de‑risk entitlement, while Boston’s structural demand for premier lab inventory underwrites robust long‑term cash‑flow.
-
-This memorandum is illustrative and draws on publicly available BPDA procurement documents; prospective proponents must perform independent due diligence and financial verification."""
+</OPPORTUNITIES> </Report>"""
 
 DEVELOPMENT_OPPORTUNITIES_PROMPT = f"""
 You are a real estate agent. You are given a property and information about that property, including parcel information, surrounding properties, and building value. Your job is to determine if any potential development opportunities are feasible for this property, and if so, what they are.
@@ -92,12 +75,22 @@ Here's the property information:
 [PROPERTY_INFO]
 </PROPERTY_INFO>
 
-Create a report detailing the feasibility of the devleopment opportunities on this property, and who to contact to potentially buy the property. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer.
+Create a report detailing the feasibility of the devleopment opportunities on this property, and who to contact to potentially buy the property. Do not use the first person, and format the promt as if it was being sent directly to the real estate developer.\
+IMPORTANT: Withhold all predictions or suggestions about potential developments until the very end of the report. Include a section separated from the rest of the report wrapped in <PREDICTIONS> tags that details your predictions about the property. For example, here is how your output should be organized:
+
+<Report>
+<Analysis>
+[ANALYSIS]
+</ANALYSIS>
+<OPPORTUNITIES>
+[OPPORTUNITIES]
+</OPPORTUNITIES>
+</Report>
 """
 
-GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find  developments nearby that could be used as a reference for the development. 
+GET_SIMILAR_DEVELOPMENT_PROMPT = """You are an expert real estate developer assistant. Given some information about a property, your goal is to find developments nearby that could be used as a reference for the development. 
 The end goal for the real estate firm is to determine the financial feasibility of developing the property. In order to do this, you should find similar devlopments nearby and analyze the financials of those developments (if possible), in order to create a good understanding of the financials of the property we're analyzing.
-Do extensive research, and discover as much about the surrounding area and the new properties as possible.List out the recent developments in the area with as much detail as possible.
+Use your search tool to do extensive research online, and discover as much about the surrounding area and the new properties as possible. List out the recent developments in the area with as much detail as possible.
 
 Here is some information about the property in Boston.
 
