@@ -37,5 +37,5 @@ def geocode_address(address):
         return None
 
 if __name__ == "__main__":
-    coords = geocode_address("1 City Hall Square, Boston, MA")
+    coords = geocode_address("263 N Harvard St, Allston, MA, 02134")
     print(coords)
