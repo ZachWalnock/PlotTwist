@@ -36,8 +36,8 @@ IMAGE_NAME="gcr.io/${PROJECT_ID}/${SERVICE_NAME}"
 
 echo -e "${YELLOW}🔧 Building and pushing Docker image...${NC}"
 
-# Build and push the image
-docker build -t ${IMAGE_NAME}:latest .
+# Build and push the image (target AMD64 for Cloud Run compatibility)
+docker build --platform linux/amd64 -t ${IMAGE_NAME}:latest .
 docker push ${IMAGE_NAME}:latest
 
 echo -e "${YELLOW}🚀 Deploying to Cloud Run...${NC}"

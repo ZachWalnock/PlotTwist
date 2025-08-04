@@ -54,7 +54,7 @@ Thumbs.db
 .coverage
 htmlcov/
 
-# Environment files (will be set via Cloud Run)
-.env
+# # Environment files (will be set via Cloud Run)
+# .env
 .env.local
 .env.*.local 
