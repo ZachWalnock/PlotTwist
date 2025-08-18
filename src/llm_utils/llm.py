@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 import os
 import json
 from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT, GET_SIMILAR_DEVELOPMENT_PROMPT, SUMMARIZATION_PROMPT
-from main import get_enhanced_parcel_data, format_property_data_for_llm
+from property_data import get_enhanced_parcel_data, format_property_data_for_llm
 from tavily import TavilyClient
 load_dotenv()
 
