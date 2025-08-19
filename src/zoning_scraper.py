@@ -4,6 +4,144 @@ import time
 from urllib.parse import quote
 import re
 
+def geocode_boston_address(address):
+    """
+    Geocode a Boston address using ArcGIS API to get latitude and longitude.
+    
+    Args:
+        address (str): Address string (e.g., "123 Main St, Boston, MA")
+    
+    Returns:
+        dict: Dictionary with coordinates and metadata, or None if geocoding fails
+        {
+            'latitude': float,
+            'longitude': float,
+            'score': float,
+            'address': str,
+            'method': str
+        }
+    """
+    # Try multiple geocoding services in order of preference
+    geocoding_methods = [
+        _geocode_with_arcgis_world,
+        _geocode_with_boston_arcgis,
+        _geocode_with_nominatim
+    ]
+    
+    for method in geocoding_methods:
+        try:
+            result = method(address)
+            if result:
+                # Convert to standard format
+                return {
+                    'latitude': result['y'],
+                    'longitude': result['x'],
+                    'score': result['score'],
+                    'address': result['address'],
+                    'method': method.__name__
+                }
+        except Exception as e:
+            print(f"Geocoding attempt failed with {method.__name__}: {e}")
+            continue
+    
+    return None
+
+def _geocode_with_arcgis_world(address):
+    """
+    Use ArcGIS World Geocoding Service (requires no API key for basic usage)
+    """
+    geocode_url = "https://geocode-api.arcgis.com/arcgis/rest/services/World/GeocodeServer/findAddressCandidates"
+    
+    params = {
+        'SingleLine': f"{address}",
+        'f': 'json',
+        'outSR': '4326',
+        'maxLocations': 1,
+        'category': 'Address',
+        'countryCode': 'USA'
+    }
+    
+    response = requests.get(geocode_url, params=params, timeout=10)
+    response.raise_for_status()
+    
+    data = response.json()
+    
+    if data.get('candidates') and len(data['candidates']) > 0:
+        candidate = data['candidates'][0]
+        location = candidate['location']
+        return {
+            'x': location['x'],
+            'y': location['y'],
+            'score': candidate['score'],
+            'address': candidate['address']
+        }
+    return None
+
+def _geocode_with_boston_arcgis(address):
+    """
+    Try Boston's ArcGIS Online services
+    """
+    # Try Boston's main ArcGIS server
+    geocode_url = "https://services.arcgis.com/sFnw0xNflSi8J0qw/arcgis/rest/services/Boston_Composite_Locator/GeocodeServer/findAddressCandidates"
+    
+    params = {
+        'SingleLine': address,
+        'f': 'json',
+        'outSR': '4326',
+        'maxLocations': 1
+    }
+    
+    response = requests.get(geocode_url, params=params, timeout=10)
+    response.raise_for_status()
+    
+    data = response.json()
+    
+    if data.get('candidates') and len(data['candidates']) > 0:
+        candidate = data['candidates'][0]
+        location = candidate['location']
+        return {
+            'x': location['x'],
+            'y': location['y'],
+            'score': candidate['score'],
+            'address': candidate['address']
+        }
+    return None
+
+def _geocode_with_nominatim(address):
+    """
+    Use OpenStreetMap Nominatim geocoding service as fallback
+    """
+    geocode_url = "https://nominatim.openstreetmap.org/search"
+    
+    params = {
+        'q': f"{address}",
+        'format': 'json',
+        'limit': 1,
+        'countrycodes': 'us',
+        'bounded': 1,
+        'viewbox': '-71.191155,42.227925,-70.986365,42.400819'  # Boston area bounding box
+    }
+    
+    # Add a custom user agent as required by Nominatim
+    headers = {
+        'User-Agent': 'BostonZoningTool/1.0'
+    }
+    
+    response = requests.get(geocode_url, params=params, headers=headers, timeout=10)
+    response.raise_for_status()
+    
+    data = response.json()
+    
+    if data and len(data) > 0:
+        result = data[0]
+        return {
+            'x': float(result['lon']),
+            'y': float(result['lat']),
+            'score': 100,  # Nominatim doesn't provide scores
+            'address': result['display_name']
+        }
+    return None
+
 class BostonZoningScraper:
     def __init__(self):
         self.base_url = "https://maps.bostonplans.org"

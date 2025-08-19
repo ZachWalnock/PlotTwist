@@ -5,7 +5,7 @@ from typing import Optional
 import uvicorn
 import os
 from property_data import get_enhanced_parcel_data, format_property_data_for_llm
-from llm import get_similar_developments, get_estate_development_opportunities, get_estate_report
+from src.llm import get_similar_developments, get_estate_development_opportunities, get_estate_report
 from prompts import DEVELOPMENT_OPPORTUNITIES_PROMPT
 
 app = FastAPI(title="PlotTwist API - Backend", 

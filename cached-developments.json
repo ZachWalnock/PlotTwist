@@ -1,0 +1,524 @@
+[
+  {
+    "address": "65-79 Seattle Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/65-79-seattle-street",
+    "latitude": 42.3615967,
+    "longitude": -71.1262478
+  },
+  {
+    "address": "250 Everett Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/250-everett-street",
+    "latitude": 42.3618691,
+    "longitude": -71.1361314
+  },
+  {
+    "address": "34-36 Pratt Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/34-36-pratt-street",
+    "latitude": 42.3550645,
+    "longitude": -71.1285815
+  },
+  {
+    "address": "393 Cambridge Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/393-cambridge-street",
+    "latitude": 42.3553728,
+    "longitude": -71.1337172
+  },
+  {
+    "address": "80 Gardner Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/80-gardner-street",
+    "latitude": 42.3538843,
+    "longitude": -71.1268191
+  },
+  {
+    "address": "120 Braintree Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/120-braintree-street",
+    "latitude": 42.3563339,
+    "longitude": -71.137467
+  },
+  {
+    "address": "449 Cambridge Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/449-cambridge-street",
+    "latitude": 42.3545294,
+    "longitude": -71.1356565
+  },
+  {
+    "address": "83 Leo M. Birmingham Parkway",
+    "link": "https://www.bostonplans.org/projects/development-projects/83-leo-m-birmingham-parkway",
+    "latitude": 42.359127,
+    "longitude": -71.1483636
+  },
+  {
+    "address": "3430 & 3440 Washington Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/3430-3440-washington-street",
+    "latitude": 42.3440492,
+    "longitude": -71.1426244
+  },
+  {
+    "address": "142-146 St. Mary’s Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/142-146-st-marys-street",
+    "latitude": 42.3489166,
+    "longitude": -71.1068147
+  },
+  {
+    "address": "60 Kilmarnock Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/60-80-kilmarnock-street",
+    "latitude": 42.3427497,
+    "longitude": -71.098518
+  },
+  {
+    "address": "1954 Commonwealth Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/1954-commonwealth-avenue",
+    "latitude": 42.3386275,
+    "longitude": -71.156162
+  },
+  {
+    "address": "20 Charlesgate West",
+    "link": "https://www.bostonplans.org/projects/development-projects/20-charlesgate-west",
+    "latitude": 42.3481992,
+    "longitude": -71.0932666
+  },
+  {
+    "address": "344-350 Washington Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/344-350-washington-street",
+    "latitude": 42.3510975,
+    "longitude": -71.1689773
+  },
+  {
+    "address": "11-11 A Parker Hill Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/11-11-a-parker-hill-avenue",
+    "latitude": 42.3326552,
+    "longitude": -71.1099637
+  },
+  {
+    "address": "36 Parker Hill Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/36-parker-hill-avenue",
+    "latitude": 42.33172,
+    "longitude": -71.1094745
+  },
+  {
+    "address": "On the Square",
+    "link": "https://www.bostonplans.org/projects/development-projects/on-the-square-(587-595-washington-st)",
+    "latitude": 42.3946818,
+    "longitude": -71.1209777
+  },
+  {
+    "address": "51 Dudley Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/51-dudley-street",
+    "latitude": 42.3959243,
+    "longitude": -71.1311716
+  },
+  {
+    "address": "550 Huntington Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/550-huntington-avenue",
+    "latitude": 42.3356047,
+    "longitude": -71.0955638
+  },
+  {
+    "address": "77 Terrace Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/77-terrace-street",
+    "latitude": 42.330983,
+    "longitude": -71.0965621
+  },
+  {
+    "address": "521-523 Cambridge Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/521-523-cambridge-street",
+    "latitude": 42.3613994,
+    "longitude": -71.0709873
+  },
+  {
+    "address": "1 & 10 Emerson Place",
+    "link": "https://www.bostonplans.org/projects/development-projects/1-10-emerson-place",
+    "latitude": 42.364423,
+    "longitude": -71.0684564
+  },
+  {
+    "address": "One Mystic Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/one-mystic-avenue",
+    "latitude": 42.3886087,
+    "longitude": -71.080698
+  },
+  {
+    "address": "95 Berkeley Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/95-berkeley-street",
+    "latitude": 42.3472776,
+    "longitude": -71.0705601
+  },
+  {
+    "address": "10 Chandler Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/10-chandler-street",
+    "latitude": 42.3470734,
+    "longitude": -71.0697027
+  },
+  {
+    "address": "15 Supertest Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/15-supertest-street",
+    "latitude": 42.3820046,
+    "longitude": -71.0736715
+  },
+  {
+    "address": "25 Supertest Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/25-supertest-street",
+    "latitude": 42.3820046,
+    "longitude": -71.0736715
+  },
+  {
+    "address": "West End Library",
+    "link": "https://www.bostonplans.org/projects/development-projects/west-end-library",
+    "latitude": 42.3615437,
+    "longitude": -71.0650037
+  },
+  {
+    "address": "1 Longfellow Place",
+    "link": "https://www.bostonplans.org/projects/development-projects/1-longfellow-place",
+    "latitude": 42.3636366,
+    "longitude": -71.0647805
+  },
+  {
+    "address": "290 Tremont Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/290-tremont-street",
+    "latitude": 42.3492932,
+    "longitude": -71.0651297
+  },
+  {
+    "address": "50 Herald Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/50-herald-street",
+    "latitude": 42.3464539,
+    "longitude": -71.0649985
+  },
+  {
+    "address": "Suffolk University - 101 Tremont Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/suffolk-university-101-tremont-street",
+    "latitude": 42.3567011,
+    "longitude": -71.0610578
+  },
+  {
+    "address": "52 Plympton Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/52-plympton-street",
+    "latitude": 42.3387221,
+    "longitude": -71.0675693
+  },
+  {
+    "address": "2 Financial Center",
+    "link": "https://www.bostonplans.org/projects/development-projects/2-financial-center",
+    "latitude": 42.3596785,
+    "longitude": -71.0602202
+  },
+  {
+    "address": "17 Bradston Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/17-bradston-street",
+    "latitude": 42.333987,
+    "longitude": -71.0697846
+  },
+  {
+    "address": "134 Hampden Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/134-hampden-street",
+    "latitude": 42.3285058,
+    "longitude": -71.0747804
+  },
+  {
+    "address": "15 Court Square",
+    "link": "https://www.bostonplans.org/projects/development-projects/15-court-square",
+    "latitude": 42.3582417,
+    "longitude": -71.0586656
+  },
+  {
+    "address": "16-18 Hawley Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/16-18-hawley-street",
+    "latitude": 42.3558733,
+    "longitude": -71.0587399
+  },
+  {
+    "address": "920 Centre Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/920-centre-street",
+    "latitude": 42.3082173,
+    "longitude": -71.1216994
+  },
+  {
+    "address": "123 North Washington Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/123-n-washington-street",
+    "latitude": 42.3657884,
+    "longitude": -71.0582107
+  },
+  {
+    "address": "40-50 Warren Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/40-50-warren-street",
+    "latitude": 42.3204546,
+    "longitude": -71.0815471
+  },
+  {
+    "address": "3326 Washington Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/3326-washington-street",
+    "latitude": 42.3097334,
+    "longitude": -71.1041331
+  },
+  {
+    "address": "12 Post Office Square",
+    "link": "https://www.bostonplans.org/projects/development-projects/12-post-office-square-office-to-residential",
+    "latitude": 42.3577396,
+    "longitude": -71.0561247
+  },
+  {
+    "address": "4 Liberty Square",
+    "link": "https://www.bostonplans.org/projects/development-projects/4-liberty-square",
+    "latitude": 42.3580404,
+    "longitude": -71.0547256
+  },
+  {
+    "address": "231-245 Grove Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/231-245-grove-street",
+    "latitude": 42.3066307,
+    "longitude": -71.1469559
+  },
+  {
+    "address": "295-297 Franklin Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/295-297-franklin-street",
+    "latitude": 42.3567067,
+    "longitude": -71.0537404
+  },
+  {
+    "address": "150 Milk Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/150-milk-street",
+    "latitude": 42.3586231,
+    "longitude": -71.0531176
+  },
+  {
+    "address": "259-267 Summer Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/259-267-summer-street",
+    "latitude": 42.3518417,
+    "longitude": -71.0535554
+  },
+  {
+    "address": "259 Allandale Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/259-allandale-street",
+    "latitude": 42.3026401,
+    "longitude": -71.1394007
+  },
+  {
+    "address": "400 Atlantic Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/390-400r-atlantic-avenue",
+    "latitude": 42.3556114,
+    "longitude": -71.0504489
+  },
+  {
+    "address": "19-21 West Third Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/19-21-west-third-street",
+    "latitude": 42.3422879,
+    "longitude": -71.0541048
+  },
+  {
+    "address": "639 Warren Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/639-warren-street",
+    "latitude": 42.3108038,
+    "longitude": -71.0833714
+  },
+  {
+    "address": "1028-1032 Dorchester Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/1028-1032-dorchester-avenue",
+    "latitude": 42.3316152,
+    "longitude": -71.0569913
+  },
+  {
+    "address": "1444-1446 Dorchester Ave",
+    "link": "https://www.bostonplans.org/projects/development-projects/1444-1446-dorchester-ave",
+    "latitude": 42.3316152,
+    "longitude": -71.0569913
+  },
+  {
+    "address": "246-248 Dorchester Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/246-248-dorchester-avenue",
+    "latitude": 42.3316152,
+    "longitude": -71.0569913
+  },
+  {
+    "address": "181 West First Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/181-185-west-first-street-184-190-206-west-se",
+    "latitude": 42.3417853,
+    "longitude": -71.0504743
+  },
+  {
+    "address": "75-77 Dorchester Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/75-77-dorchester-street",
+    "latitude": 42.3308107,
+    "longitude": -71.0545961
+  },
+  {
+    "address": "1200 Centre Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/1200-centre-street",
+    "latitude": 42.2968715,
+    "longitude": -71.1310493
+  },
+  {
+    "address": "460 West Broadway",
+    "link": "https://www.bostonplans.org/projects/development-projects/460-west-broadway",
+    "latitude": 42.3361685,
+    "longitude": -71.0461477
+  },
+  {
+    "address": "151 Liverpool Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/151-liverpool-street",
+    "latitude": 42.372569,
+    "longitude": -71.040517
+  },
+  {
+    "address": "261 Maverick Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/261-maverick-street",
+    "latitude": 42.3704486,
+    "longitude": -71.0396265
+  },
+  {
+    "address": "279 Maverick Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/279-maverick-street",
+    "latitude": 42.3704486,
+    "longitude": -71.0396265
+  },
+  {
+    "address": "555-559 Columbia Road",
+    "link": "https://www.bostonplans.org/projects/development-projects/555-559-columbia-road",
+    "latitude": 42.3208963,
+    "longitude": -71.056325
+  },
+  {
+    "address": "265 Maverick Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/265-maverick-street",
+    "latitude": 42.367746,
+    "longitude": -71.0337356
+  },
+  {
+    "address": "29-33 Romsey Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/29-33-romsey-street",
+    "latitude": 42.3159663,
+    "longitude": -71.0546176
+  },
+  {
+    "address": "2-8 Bowdoin Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/2-8-bowdoin-street",
+    "latitude": 42.3064764,
+    "longitude": -71.0667505
+  },
+  {
+    "address": "9 Geneva Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/9-geneva-street",
+    "latitude": 42.3682814,
+    "longitude": -71.0335072
+  },
+  {
+    "address": "586-598 Canterbury Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/586-598-canterbury-street",
+    "latitude": 42.2926246,
+    "longitude": -71.0971127
+  },
+  {
+    "address": "101 Boston Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/101-boston-street",
+    "latitude": 42.400458,
+    "longitude": -71.0457521
+  },
+  {
+    "address": "22 Drydock Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/22-drydock-avenue",
+    "latitude": 42.344774,
+    "longitude": -71.032278
+  },
+  {
+    "address": "62-66 Condor Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/62-66-condor-street",
+    "latitude": 42.3825953,
+    "longitude": -71.0334668
+  },
+  {
+    "address": "98-100 Condor Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/98-100-condor-street",
+    "latitude": 42.3825953,
+    "longitude": -71.0334668
+  },
+  {
+    "address": "110 Wales Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/110-wales-street",
+    "latitude": 42.2937611,
+    "longitude": -71.0830683
+  },
+  {
+    "address": "662-666 East Broadway",
+    "link": "https://www.bostonplans.org/projects/development-projects/662-666-east-broadway",
+    "latitude": 42.3357088,
+    "longitude": -71.0312999
+  },
+  {
+    "address": "99-105 Addison Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/99-105-addison-street",
+    "latitude": 42.3986207,
+    "longitude": -71.0348235
+  },
+  {
+    "address": "841 Morton Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/841-morton-street",
+    "latitude": 42.2810546,
+    "longitude": -71.0865269
+  },
+  {
+    "address": "990 American Legion Highway",
+    "link": "https://www.bostonplans.org/projects/development-projects/990-american-legion-highway",
+    "latitude": 42.2737788,
+    "longitude": -71.1168524
+  },
+  {
+    "address": "555 Talbot Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/555-talbot-avenue",
+    "latitude": 42.2860989,
+    "longitude": -71.0646266
+  },
+  {
+    "address": "2062 Dorchester Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/2062-dorchester-avenue",
+    "latitude": 42.280447,
+    "longitude": -71.0654783
+  },
+  {
+    "address": "157 Granite Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/157-granite-avenue",
+    "latitude": 42.2790746,
+    "longitude": -71.0543267
+  },
+  {
+    "address": "85-87 Walnut Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/85-87-walnut-street",
+    "latitude": 42.2864348,
+    "longitude": -71.0413589
+  },
+  {
+    "address": "1214 Bennington Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/1214-bennington-street",
+    "latitude": 42.3889455,
+    "longitude": -70.998325
+  },
+  {
+    "address": "1318 River Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/1318-river-street",
+    "latitude": 42.2552457,
+    "longitude": -71.126118
+  },
+  {
+    "address": "1305 Hyde Park Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/1305-hyde-park-avenue",
+    "latitude": 42.2542388,
+    "longitude": -71.1245419
+  },
+  {
+    "address": "1702 Hyde Park Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/1702-hyde-park-avenue",
+    "latitude": 42.2403188,
+    "longitude": -71.1307812
+  },
+  {
+    "address": "1740 Hyde Park Avenue",
+    "link": "https://www.bostonplans.org/projects/development-projects/1740-hyde-park-avenue",
+    "latitude": 42.2398212,
+    "longitude": -71.1313638
+  },
+  {
+    "address": "244-284 A Street",
+    "link": "https://www.bostonplans.org/projects/development-projects/244-284-a-street",
+    "latitude": 0.0,
+    "longitude": 0.0
+  },
+  
