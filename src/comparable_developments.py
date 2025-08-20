@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import time
 import asyncio
+import sys
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 from urllib.parse import urljoin, urlencode
