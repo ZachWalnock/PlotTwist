@@ -3,6 +3,7 @@ from __future__ import annotations
 import csv
 import time
 import asyncio
+import sys
 from dataclasses import dataclass
 from typing import List, Optional, Dict
 from urllib.parse import urljoin
@@ -283,7 +284,21 @@ def scrape_developments(num_pages: int = 100, delay_sec: float = 0.4) -> List[De
 
 
 async def main_async():
-    target_address = "263 N Harvard St, Allston, MA 02134"
+    # Check for help flag
+    if len(sys.argv) > 1 and sys.argv[1] in ['-h', '--help', 'help']:
+        print("Usage: python src/comparable_developments.py [ADDRESS]")
+        print("Example: python src/comparable_developments.py '123 Main St, Boston, MA'")
+        print("If no address is provided, uses default: 263 N Harvard St, Allston, MA 02134")
+        return
+    
+    # Get target address from command line argument or use default
+    default_address = "263 N Harvard St, Allston, MA 02134"
+    if len(sys.argv) > 1:
+        target_address = sys.argv[1]
+        print(f"Using provided address: {target_address}")
+    else:
+        target_address = default_address
+        print(f"No address provided, using default: {target_address}")
     print("Geocoding target address...")
     target_result = await geocode_boston_address_async(target_address)
     if not target_result:
@@ -296,8 +311,14 @@ async def main_async():
     developments = scrape_developments(num_pages=20)
     print(f"Found {len(developments)} developments")
     
-    with open("cached-developments.json", "r", encoding="utf-8") as f:
-        cached_developments = json.load(f)
+    # Load cached developments with error handling
+    try:
+        with open("cached-developments.json", "r", encoding="utf-8") as f:
+            cached_developments = json.load(f)
+        print(f"Loaded {len(cached_developments)} cached developments")
+    except (FileNotFoundError, json.JSONDecodeError) as e:
+        print(f"Cache file issue ({e}), starting fresh")
+        cached_developments = []
     cached_addresses = [d["address"] for d in cached_developments]
     # Extract addresses for batch geocoding
     developments_to_geocode = [d for d in developments if d.address not in cached_addresses]
@@ -331,7 +352,12 @@ async def main_async():
                 target_result['latitude'], target_result['longitude']
             )
             dev.distance = distance
-            cached_developments.append(dev)
+            cached_developments.append({
+                'address': dev.address,
+                'latitude': dev.latitude,
+                'longitude': dev.longitude,
+                'link': dev.link
+            })
         else:
             dev.distance = float('inf')  # Failed geocoding
     
