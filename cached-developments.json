@@ -521,4 +521,64 @@
     "latitude": 0.0,
     "longitude": 0.0
   },
-  
+  {
+    "address": "415 Newbury Street",
+    "latitude": 42.3482396,
+    "longitude": -71.089737,
+    "link": "https://www.bostonplans.org/projects/development-projects/415-newbury-street"
+  },
+  {
+    "address": "Parcel 13",
+    "latitude": 42.347743,
+    "longitude": -71.0871425,
+    "link": "https://www.bostonplans.org/projects/development-projects/parcel-13"
+  },
+  {
+    "address": "380 Stuart Street",
+    "latitude": 42.3490185,
+    "longitude": -71.0729399,
+    "link": "https://www.bostonplans.org/projects/development-projects/380-stuart-street"
+  },
+  {
+    "address": "220 Huntington Avenue",
+    "latitude": 42.3435153,
+    "longitude": -71.0833389,
+    "link": "https://www.bostonplans.org/projects/development-projects/220-huntington-avenue"
+  },
+  {
+    "address": "140 Clarendon Street",
+    "latitude": 42.3485849,
+    "longitude": -71.0744787,
+    "link": "https://www.bostonplans.org/projects/development-projects/140-clarendon-street"
+  },
+  {
+    "address": "415 Newbury Street",
+    "latitude": 42.3482396,
+    "longitude": -71.089737,
+    "link": "https://www.bostonplans.org/projects/development-projects/415-newbury-street"
+  },
+  {
+    "address": "Parcel 13",
+    "latitude": 42.347743,
+    "longitude": -71.0871425,
+    "link": "https://www.bostonplans.org/projects/development-projects/parcel-13"
+  },
+  {
+    "address": "380 Stuart Street",
+    "latitude": 42.3490185,
+    "longitude": -71.0729399,
+    "link": "https://www.bostonplans.org/projects/development-projects/380-stuart-street"
+  },
+  {
+    "address": "220 Huntington Avenue",
+    "latitude": 42.3435153,
+    "longitude": -71.0833389,
+    "link": "https://www.bostonplans.org/projects/development-projects/220-huntington-avenue"
+  },
+  {
+    "address": "140 Clarendon Street",
+    "latitude": 42.3485849,
+    "longitude": -71.0744787,
+    "link": "https://www.bostonplans.org/projects/development-projects/140-clarendon-street"
+  }
+]

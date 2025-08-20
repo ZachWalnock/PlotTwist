@@ -5,7 +5,7 @@ import time
 import asyncio
 from dataclasses import dataclass
 from typing import List, Optional, Dict
-from urllib.parse import urljoin
+from urllib.parse import urljoin, urlencode
 from concurrent.futures import ThreadPoolExecutor, as_completed
 
 import requests
@@ -253,7 +253,7 @@ def parse_list_page(html: str, base_url: str) -> List[Development]:
     return devs
 
 
-def scrape_developments(num_pages: int = 100, delay_sec: float = 0.4) -> List[Development]:
+def scrape_developments(num_pages: int = 100, delay_sec: float = 0.1, neighbordhood: Optional[str] = None) -> List[Development]:
     """
     Scrape up to `num_pages` pages of the Development Projects listing.
     Page 1 is the base URL (no ?page=), pages >= 2 use ?page=N.
@@ -267,9 +267,15 @@ def scrape_developments(num_pages: int = 100, delay_sec: float = 0.4) -> List[De
     })
 
     all_devs: List[Development] = []
-
+    with open("neighborhood-id-mapping.json", "r", encoding="utf-8") as f:
+        neighborhood_id_mapping = json.load(f)
+    params = {"sortby": "filed", "sortdirection": "DESC"}
+    if neighbordhood:
+        params['neighborhoodid'] = neighborhood_id_mapping[neighbordhood.lower()]
     for page in range(1, num_pages + 1):
-        url = LIST_URL if page == 1 else f"{LIST_URL}?page={page}"
+        # Construct URL with query parameters
+        url = f"{LIST_URL}?{urlencode(params)}"
+            
         resp = session.get(url, timeout=30)
         resp.raise_for_status()
 
@@ -282,8 +288,7 @@ def scrape_developments(num_pages: int = 100, delay_sec: float = 0.4) -> List[De
     return all_devs
 
 
-async def main_async():
-    target_address = "263 N Harvard St, Allston, MA 02134"
+async def main_async(target_address: str, neighbordhood: str):
     print("Geocoding target address...")
     target_result = await geocode_boston_address_async(target_address)
     if not target_result:
@@ -293,9 +298,9 @@ async def main_async():
     print(f"Target coords: {target_result['latitude']}, {target_result['longitude']}")
     
     print("Scraping developments...")
-    developments = scrape_developments(num_pages=20)
+    developments = scrape_developments(num_pages=2, neighbordhood=neighbordhood)
     print(f"Found {len(developments)} developments")
-    
+
     with open("cached-developments.json", "r", encoding="utf-8") as f:
         cached_developments = json.load(f)
     cached_addresses = [d["address"] for d in cached_developments]
@@ -314,7 +319,7 @@ async def main_async():
                 )
                 break
     
-    print("Batch geocoding all addresses (async)...")
+    print(f"Batch geocoding {len(developments_to_geocode)} addresses (async)...")
     start_time = time.time()
     geocode_results = await geocode_addresses_batch_async(developments_to_geocode, batch_size=10)
     end_time = time.time()
@@ -331,7 +336,12 @@ async def main_async():
                 target_result['latitude'], target_result['longitude']
             )
             dev.distance = distance
-            cached_developments.append(dev)
+            cached_developments.append({
+                "address": dev.address,
+                "latitude": dev.latitude,
+                "longitude": dev.longitude,
+                "link": dev.link
+            })
         else:
             dev.distance = float('inf')  # Failed geocoding
     
@@ -357,4 +367,6 @@ async def main_async():
 
 
 if __name__ == "__main__":
-    asyncio.run(main_async())
+    target_address = "263 N Harvard St, Allston, MA 02134"
+    neighbordhood = "allston"
+    asyncio.run(main_async(target_address, neighbordhood))
